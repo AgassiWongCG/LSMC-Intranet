@@ -21,7 +21,7 @@ $data = $req->fetch();
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="./css/style.css">
   </head>
   <body>
         <div class="container">
@@ -34,7 +34,7 @@ $data = $req->fetch();
                             break;
 
                         case "success_password":
-                            echo "<div class='alert alert-success'>Le mot de passe a bien été modifié ! </div>";
+                            echo "<div class='alert alert-success'>Le mot de passe a bien été modifié</div>";
                             break;
                     }
                 } ?>
@@ -70,7 +70,7 @@ $data = $req->fetch();
                             </button>
                          </div>
                             <div class="modal-body">
-                                <form action="layouts/change_password.php" method="POST">
+                                <form action="change_password.php" method="POST">
                                     <label for='current_password'>Mot de passe actuel</label>
                                     <input type="password" id="current_password" name="current_password" class="form-control" required/>
                                     <br />

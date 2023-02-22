@@ -5,8 +5,8 @@
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <meta name="author" content="NoS1gnal"/>
 
-            <link href="./css/magnific-popup.min.css" rel="stylesheet" />
-            <link rel="stylesheet" href="./css/bootstrap.min.css">
+            <link href="./css/magnificPopup.css" rel="stylesheet" />
+            <link rel="stylesheet" href="./css/style.css">
             <title>Connexion</title>
         </head>
         <body>

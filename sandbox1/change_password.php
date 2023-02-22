@@ -2,11 +2,11 @@
 // Démarrage de la session
 session_start();
 // Include de la base de données
-require_once "../config.php";
+require_once "config.php";
 
 // Si la session n'existe pas
 if (!isset($_SESSION["user"])) {
-    header("Location:../index.php");
+    header("Location: index.php");
     die();
 }
 
@@ -50,14 +50,14 @@ if (
                 "token" => $_SESSION["user"],
             ]);
             // On redirige
-            header("Location: ../landing.php?err=success_password");
+            header("Location: landing.php?err=success_password");
             die();
         }
     } else {
-        header("Location: ../landing.php?err=current_password");
+        header("Location: landing.php?err=current_password");
         die();
     }
 } else {
-    header("Location: ../landing.php");
+    header("Location: landing.php");
     die();
 }
