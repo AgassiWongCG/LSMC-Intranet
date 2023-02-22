@@ -46,6 +46,7 @@ $data = $req->fetch();
                         ]; ?> !</h1>
                         <hr />
                         <a href="deconnexion.php" class="btn btn-danger btn-lg">Déconnexion</a>
+                        <a href="service.php" class="btn btn-danger btn-lg">Prise de Service</a>
                         <!-- Button trigger modal -->
                         <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#change_password">
                           Changer mon mot de passe
