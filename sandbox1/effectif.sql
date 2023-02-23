@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : mer. 22 fév. 2023 à 19:03
+-- Généré le : jeu. 23 fév. 2023 à 23:29
 -- Version du serveur : 10.4.27-MariaDB
 -- Version de PHP : 8.2.0
 
@@ -29,20 +29,35 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `effectif` (
   `id` int(11) NOT NULL,
-  `pseudo` varchar(255) NOT NULL,
-  `email` varchar(255) NOT NULL,
-  `password` text NOT NULL,
   `ip` varchar(20) NOT NULL,
+  `pseudo` varchar(255) NOT NULL,
+  `password` text NOT NULL,
   `date_inscription` datetime NOT NULL DEFAULT current_timestamp(),
-  `token` varchar(255) NOT NULL
+  `token` varchar(255) NOT NULL,
+  `firstname` varchar(255) NOT NULL,
+  `lastname` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `hospital` varchar(255) NOT NULL,
+  `grade` varchar(255) NOT NULL DEFAULT '''Étudiant''',
+  `role` varchar(255) NOT NULL,
+  `agregation` varchar(255) NOT NULL,
+  `phone` varchar(255) NOT NULL,
+  `register` tinyint(1) NOT NULL DEFAULT 0,
+  `service` tinyint(1) NOT NULL DEFAULT 0,
+  `statut` varchar(255) NOT NULL,
+  `intervention` varchar(255) NOT NULL,
+  `commentaire` varchar(255) NOT NULL,
+  `vehicule` varchar(255) NOT NULL,
+  `debutservice` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `effectif`
 --
 
-INSERT INTO `effectif` (`id`, `pseudo`, `email`, `password`, `ip`, `date_inscription`, `token`) VALUES
-(2, 'agassiwong', 'agassi.wong.pro@gmail.com', '$2y$12$IusJbw79Ogns9OiibfR59O4u8v.one.E/1C1uPh73i8WnTvcXH1o.', '::1', '2023-02-22 00:08:10', 'cfe4765b400743637889fd45c9e61de1083c6b055567aa9925a653bd5920817f3a95dd913019c403d93860c930dfe08a3860a1d285d9cb6dea49e873d0486a8e');
+INSERT INTO `effectif` (`id`, `ip`, `pseudo`, `password`, `date_inscription`, `token`, `firstname`, `lastname`, `email`, `hospital`, `grade`, `role`, `agregation`, `phone`, `register`, `service`, `statut`, `intervention`, `commentaire`, `vehicule`, `debutservice`) VALUES
+(2, '::1', 'agassiwong', '$2y$12$IwkxippI/RRxwJ4YGWK9/.arfKerapKr5eP.u3VYQoNe1cddRD0mW', '2023-02-22 00:08:10', 'cfe4765b400743637889fd45c9e61de1083c6b055567aa9925a653bd5920817f3a95dd913019c403d93860c930dfe08a3860a1d285d9cb6dea49e873d0486a8e', 'agassi', 'wong', 'agassi.wong@lsmc.com', 'lsmc', 'Ambulancier', 'Mentor', '', '555502128', 1, 1, '6', 'Consultation', 'qqq', 'Caracara', '2023-02-23 23:20:27'),
+(3, '::1', 'coleanderson', '$2y$12$IwkxippI/RRxwJ4YGWK9/.arfKerapKr5eP.u3VYQoNe1cddRD0mW', '2023-02-23 00:08:10', 'cfe4765b400743637889fd45c9e61de1083c6b055567aa9925a653bd5920817f3a95dd913019c403d93860c930dfe08a3860a1d285d9cb6dea49e873d0486a8e', 'cole', 'anderson', 'cole.anderson@lsmc.com', 'lsmc', 'Interne', 'Mentor', '', '555555555', 1, 1, '0', '', 'Code 6 - Unité Sauvage', '', '2023-02-22 23:21:21');
 
 --
 -- Index pour les tables déchargées
@@ -62,7 +77,7 @@ ALTER TABLE `effectif`
 -- AUTO_INCREMENT pour la table `effectif`
 --
 ALTER TABLE `effectif`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
