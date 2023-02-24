@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : jeu. 23 fév. 2023 à 23:29
+-- Généré le : ven. 24 fév. 2023 à 22:53
 -- Version du serveur : 10.4.27-MariaDB
 -- Version de PHP : 8.2.0
 
@@ -56,8 +56,8 @@ CREATE TABLE `effectif` (
 --
 
 INSERT INTO `effectif` (`id`, `ip`, `pseudo`, `password`, `date_inscription`, `token`, `firstname`, `lastname`, `email`, `hospital`, `grade`, `role`, `agregation`, `phone`, `register`, `service`, `statut`, `intervention`, `commentaire`, `vehicule`, `debutservice`) VALUES
-(2, '::1', 'agassiwong', '$2y$12$IwkxippI/RRxwJ4YGWK9/.arfKerapKr5eP.u3VYQoNe1cddRD0mW', '2023-02-22 00:08:10', 'cfe4765b400743637889fd45c9e61de1083c6b055567aa9925a653bd5920817f3a95dd913019c403d93860c930dfe08a3860a1d285d9cb6dea49e873d0486a8e', 'agassi', 'wong', 'agassi.wong@lsmc.com', 'lsmc', 'Ambulancier', 'Mentor', '', '555502128', 1, 1, '6', 'Consultation', 'qqq', 'Caracara', '2023-02-23 23:20:27'),
-(3, '::1', 'coleanderson', '$2y$12$IwkxippI/RRxwJ4YGWK9/.arfKerapKr5eP.u3VYQoNe1cddRD0mW', '2023-02-23 00:08:10', 'cfe4765b400743637889fd45c9e61de1083c6b055567aa9925a653bd5920817f3a95dd913019c403d93860c930dfe08a3860a1d285d9cb6dea49e873d0486a8e', 'cole', 'anderson', 'cole.anderson@lsmc.com', 'lsmc', 'Interne', 'Mentor', '', '555555555', 1, 1, '0', '', 'Code 6 - Unité Sauvage', '', '2023-02-22 23:21:21');
+(2, '::1', 'agassiwong', '$2y$12$IwkxippI/RRxwJ4YGWK9/.arfKerapKr5eP.u3VYQoNe1cddRD0mW', '2023-02-22 00:08:10', 'cfe4765b400743637889fd45c9e61de1083c6b055567aa9925a653bd5920817f3a95dd913019c403d93860c930dfe08a3860a1d285d9cb6dea49e873d0486a8e', 'agassi', 'wong', 'agassi.wong@lsmc.com', 'lsmc', 'Ambulancier', 'Mentor', '', '555502128', 1, 1, '6', 'Code 6', '', 'Aucune', '2023-02-24 22:29:55'),
+(3, '::1', 'coleanderson', '$2y$12$IwkxippI/RRxwJ4YGWK9/.arfKerapKr5eP.u3VYQoNe1cddRD0mW', '2023-02-23 00:08:10', 'cfe4765b400743637889fd45c9e61de1083c6b055567aa9925a653bd5920817f3a95dd913019c403d93860c930dfe08a3860a1d285d9cb6dea49e873d0486a8e', 'cole', 'anderson', 'cole.anderson@lsmc.com', 'lsmc', 'Interne', 'Mentor', '', '555555555', 1, 1, '0', 'Code 6', 'Code 6 - Unité Sauvage', '', '2023-02-22 23:21:21');
 
 --
 -- Index pour les tables déchargées
