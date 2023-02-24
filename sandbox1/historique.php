@@ -64,6 +64,7 @@
 	</head>
 
 	<body style="width: 100%; text-align: center;">
+        <a href="landing.php" class="btn btn-danger btn-lg">Retour Profil</a><br/>
 <?php
     // Info : Donnée de connexion au serveur phpmyadmin
     $servername = "localhost";
@@ -164,21 +165,56 @@
     ($connect = mysqli_connect("localhost", "root", "")) or die("erreur de connection à MySQL");
     mysqli_select_db($connect, "lsmc") or die("erreur de connexion à la base de données");
     $idEffectifActuel = $data["id"];
-    //                                                       0      1          2              3        4      5       6      7         8
-    $result                 = mysqli_query($connect, "SELECT id, effectif, debutservice, finservice, total, dernier, heure, minute, seconde FROM service WHERE effectif=$idEffectifActuel");
+
+    //                                                       0      1          2              3        4      5       6      7         8       9
+    $result                 = mysqli_query($connect, "SELECT id, effectif, debutservice, finservice, total, dernier, heure, minute, seconde, jour FROM service WHERE effectif=$idEffectifActuel");
+
+    $result_total           = mysqli_query($connect, "SELECT SUM(seconde) AS seconde, SUM(minute) AS minute, SUM(heure) AS heure, SUM(jour) AS jour, dernier FROM service WHERE effectif=$idEffectifActuel AND dernier=0");
+
+    while ($row = mysqli_fetch_row($result_total)) {
+        echo "<span>TOTAL</span><br/>";
+        $total_jour     = $row[3];
+        $total_heure    = $row[2];
+        $total_minute   = $row[1];
+        $total_seconde  = $row[0];
+
+        $minute_supp = 0;
+        if ($total_seconde > 59) {
+            $minute_supp = intval($total_seconde / 60);
+            $total_seconde = $total_seconde % 60;
+            $total_minute = $total_minute + $minute_supp;
+        }
+
+        $heure_supp = 0;
+        if ($total_minute > 59) {
+            $heure_supp = intval($total_minute / 60);
+            $total_minute = $total_minute % 60;
+            $total_heure = $total_heure + $heure_supp;
+        }
+
+        $jour_supp = 0;
+        if ($total_minute > 23) {
+            $jour_supp = intval($total_heure / 24);
+            $total_heure = $total_heure % 24;
+            $total_jour = $total_jour + $jour_supp;
+        }
+
+        echo "<span>$total_jour jour(s)</span><br/>";
+        echo "<span>$total_heure heure(s)</span><br/>";
+        echo "<span>$total_minute minute(s)</span><br/>";
+        echo "<span>$total_seconde seconde(s)</span><br/>";
+    }
 
     // Récupération des résultats
     echo '  <table border="1" cellpadding="2" cellspacing="2">
                 <tr>
                     <th>Id</th>
-                    <th>Effectif</th>
                     <th>Début Service</th>
                     <th>Fin Service</th>
-                    <th>Total</th>
+                    <th>Jour(s)</th>
                     <th>Heure(s)</th>
                     <th>Minute(s)</th>
                     <th>Seconde(s)</th>
-                    <th>Dernier ?</th>
                 </tr>';
     while ($row = mysqli_fetch_row($result)) {
         $id                 = $row[0];
@@ -190,23 +226,30 @@
         $heure              = $row[6];
         $minute             = $row[7];
         $seconde            = $row[8];
+        $jour            = $row[9];
+        if ($finservice === '' || $finservice === null) {
+            $finservice = "Non terminé";
+        }
+        if ($dernier === '1') {
+            $jour = "?";
+            $heure = "?";
+            $minute = "?";
+            $seconde = "?";
+        }
 
     echo "<tr>
             <td>$id</td>
-            <td>$effectif</td>
             <td>$debutservice</td>
             <td>$finservice</td>
-            <td>$total</td>
+            <td>$jour</td>
             <td>$heure</td>
             <td>$minute</td>
             <td>$seconde</td>
-            <td>$dernier</td>
         </tr>";
     }
 
     //Déconnexion de la base de données
     mysqli_close($connect);
 ?>
-        <a href="landing.php" class="btn btn-danger btn-lg">Retour Profil</a>
 	</body>
 </html>

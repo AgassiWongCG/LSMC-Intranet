@@ -65,6 +65,7 @@
 
 	<body style="width: 100%; text-align: center;">
 		<h4>Prise de service</h4>
+        <div id='response-content'></div>
 		<form method="post" action="service.php" style="width: 100%; text-align: center;">
 			<table style="width: 100%; text-align: center;">
 				<tbody>
@@ -138,6 +139,10 @@
         return $difference;
     }
 
+    function add($x, $y){
+        return $x + $x;
+    }
+
     if (isset($_POST["button_PriseDeService"])) {
 
         $nouveauStatut      = $_POST['Statut'];
@@ -178,7 +183,6 @@
         $nouveauVehicule    = $_POST['Vehicule'];
         $nouveauCommentaire = $_POST['Commentaire'];
 
-        echo "<script>console.log('selected: " . $selected . "' );</script>";
         // Create connection
         $conn = new mysqli($servername, $username, $password, $dbname);
         // Check connection
@@ -190,11 +194,6 @@
         $sql = "UPDATE effectif SET intervention='$nouveauStatut', vehicule='$nouveauVehicule', commentaire='$nouveauCommentaire' WHERE id=$idEffectifActuel";
 
         if ($conn->query($sql) === TRUE) {
-          echo "Record updated successfully";
-        } else {
-          echo "Error updating record: " . $conn->error;
-        }
-        if ($conn->query($sql2) === TRUE) {
           echo "Record updated successfully";
         } else {
           echo "Error updating record: " . $conn->error;
@@ -231,25 +230,12 @@
         echo $difference->h.' hours<br>';
         echo $difference->i.' minutes<br>';
         echo $difference->s.' seconds<br>';
+        $jour = $difference->d;
         $heure = $difference->h;
         $minute = $difference->i;
         $seconde = $difference->s;
 
-//         $start_datetime = new DateTime($data["debutservice"]);
-//         $end_datetime = $start_date->diff(new DateTime('NOW'));
-//         echo $end_datetime->days.' days total<br>';
-//         echo $end_datetime->y.' years<br>';
-//         echo $end_datetime->m.' months<br>';
-//         echo $end_datetime->d.' days<br>';
-//         echo $since_start->h.' hours<br>';
-//         echo $since_start->i.' minutes<br>';
-//         echo $since_start->s.' seconds<br>';
-//         echo $since_start->s.' seconds<br>';
-
-//         echo "<script>console.log('interval: " . $interval . "' );</script>";
-//         echo "<script>console.log('hours_difference: " . $hours_difference . "' );</script>";
-//         echo "<script>console.log('diff_minutes: " . $diff_minutes . "' );</script>";
-        $sql2   = "UPDATE service SET finservice=now(), heure=$heure, minute=$minute, seconde=$seconde, dernier='0' WHERE effectif=$idEffectifActuel AND dernier='1' LIMIT 1";
+        $sql2   = "UPDATE service SET finservice=now(), jour=$jour, heure=$heure, minute=$minute, seconde=$seconde, dernier='0' WHERE effectif=$idEffectifActuel AND dernier='1' LIMIT 1";
 
         if ($conn->query($sql) === TRUE && $conn->query($sql2) === TRUE) {
           echo "Record updated successfully";
@@ -262,18 +248,35 @@
         // Actualisation pour ne pas duppliquer la requête de formulaire
         header("Location: service.php");
     }
+
+    if (isset($_POST["button_RetirerServiceEffectif"])) {
+
+    }
+
     ($connect = mysqli_connect("localhost", "root", "")) or die("erreur de connection à MySQL");
     mysqli_select_db($connect, "lsmc") or die("erreur de connexion à la base de données");
     //                                                       0      1          2         3        4      5     6         7        8            9            10          11            12
-    $result                 = mysqli_query($connect, "SELECT id, hospital, firstname, lastname, grade, role, agregation, phone, intervention, commentaire, vehicule, debutservice, service FROM effectif WHERE service = true");
-    $nbrTotalService        = mysqli_num_rows($result);
-    $nbrTotalService_LSMC   = mysqli_num_rows(mysqli_query($connect, "SELECT * FROM effectif WHERE service = true AND hospital = 'lsmc'"));
-    $nbrTotalService_BCMC   = mysqli_num_rows(mysqli_query($connect, "SELECT * FROM effectif WHERE service = true AND hospital = 'bcmc'"));
+    $result                         = mysqli_query($connect, "SELECT id, hospital, firstname, lastname, grade, role, agregation, phone, intervention, commentaire, vehicule, debutservice, service FROM effectif WHERE service = true");
+    $nbrTotalService                = mysqli_num_rows($result);
+    $nbrTotalService_LSMC           = mysqli_num_rows(mysqli_query($connect, "SELECT * FROM effectif WHERE service = true AND hospital = 'lsmc'"));
+    $nbrTotalService_LSMC_Code3     = mysqli_num_rows(mysqli_query($connect, "SELECT * FROM effectif WHERE service = true AND hospital = 'lsmc' AND intervention='Code 3'"));
+    $nbrTotalService_LSMC_Code6     = mysqli_num_rows(mysqli_query($connect, "SELECT * FROM effectif WHERE service = true AND hospital = 'lsmc' AND intervention='Code 6'"));
+    $nbrTotalService_BCMC           = mysqli_num_rows(mysqli_query($connect, "SELECT * FROM effectif WHERE service = true AND hospital = 'bcmc'"));
+    $nbrTotalService_BCMC_Code3     = mysqli_num_rows(mysqli_query($connect, "SELECT * FROM effectif WHERE service = true AND hospital = 'bcmc' AND intervention='Code 3'"));
+    $nbrTotalService_BCMC_Code6     = mysqli_num_rows(mysqli_query($connect, "SELECT * FROM effectif WHERE service = true AND hospital = 'bcmc' AND intervention='Code 6'"));
 
     // Récupération des résultats
-    echo "<p>Nombre en Service : $nbrTotalService</p>";
+    echo "<p>Nombre Total en Service : $nbrTotalService</p>";
+    echo "<p>*******************</p>";
+    echo "<p>LSMC</p>";
     echo "<p>Nombre en Service LSMC : $nbrTotalService_LSMC</p>";
+    echo "<p>Nombre en Code 3 : $nbrTotalService_LSMC_Code3</p>";
+    echo "<p>Nombre en Code 6 : $nbrTotalService_LSMC_Code6</p>";
+    echo "<p>*******************</p>";
+    echo "<p>BCMC</p>";
     echo "<p>Nombre en Service BCMC : $nbrTotalService_BCMC</p>";
+    echo "<p>Nombre en Code 3 : $nbrTotalService_BCMC_Code3</p>";
+    echo "<p>Nombre en Code 6 : $nbrTotalService_BCMC_Code6</p>";
     echo '  <table border="1" cellpadding="2" cellspacing="2">
                 <tr>
                     <th>Id</th>
@@ -305,7 +308,7 @@
 
     echo "<tr>
             <td>$id</td>
-            <td>$phone</td>
+            <td>$hopital</td>
             <td>$prenom $nom</td>
             <td>$grade</td>
             <td>$role</td>
@@ -317,6 +320,8 @@
             <td>$debutservice</td>
         </tr>";
     }
+
+//     <input type="submit" onmousover="errorCheck_FinDeService()" name="button_FinDeService" value="Fin de service" class="btn btn-danger btn-lg"/>
 
     //Déconnexion de la base de données
     mysqli_close($connect);
