@@ -15,9 +15,10 @@
 
     <div class="login-form">
         <?php if (isset($_GET["login_err"])) {
-                 $err = htmlspecialchars($_GET["login_err"]);
-
-                 switch ($err) { case "password": ?>
+             $err = htmlspecialchars($_GET["login_err"]);
+             switch ($err) {
+                case "password":
+        ?>
         <div class="alert alert-danger">
             <strong>Erreur</strong> mot de passe incorrect
         </div>
@@ -29,8 +30,8 @@
         <div class="alert alert-danger">
             <strong>Erreur</strong> compte non existant
         </div>
-        <?php break;}
-             } ?>
+            <?php break;}
+         } ?>
 
         <form action="connexion.php" method="post">
             <h2 class="text-center">Connexion</h2>
@@ -46,6 +47,7 @@
                 <button type="submit" class="btn btn-primary btn-block">Connexion</button>
             </div>
         </form>
+
         <p class="text-center"><a href="inscription.php">Inscription</a></p>
     </div>
     <style>

@@ -131,6 +131,13 @@
     $password   = "";
     $dbname     = "lsmc";
 
+    function differenceInHours($startdate,$enddate){
+        $starttimestamp = strtotime($startdate);
+        $endtimestamp = strtotime($enddate);
+        $difference = abs($endtimestamp - $starttimestamp)/3600;
+        return $difference;
+    }
+
     if (isset($_POST["button_PriseDeService"])) {
 
         $nouveauStatut      = $_POST['Statut'];
@@ -146,19 +153,19 @@
 
         $idEffectifActuel = $data["id"];
         $serviceEffectifActuel = $data["service"];
-        if ($serviceEffectifActuel === 0) {
-            $sql = "UPDATE effectif SET service='1', intervention='$nouveauStatut', vehicule='$nouveauVehicule', commentaire='$nouveauCommentaire', debutservice=now() WHERE id=$idEffectifActuel";
-        }
-        else if ($serviceEffectifActuel === 1) {
-            $sql = "UPDATE effectif SET service='0' WHERE id=$idEffectifActuel";
-        }
+        $sql    = "UPDATE effectif SET service='1', intervention='$nouveauStatut', vehicule='$nouveauVehicule', commentaire='$nouveauCommentaire', debutservice=now() WHERE id=$idEffectifActuel";
+        $sql2   = "INSERT INTO `service` (`id`, `effectif`, `debutservice`, `finservice`, `heure`, `minute`, `dernier`) VALUES (NULL, '2', NOW(), NULL, 0, 0, '1')";
 
         if ($conn->query($sql) === TRUE) {
           echo "Record updated successfully";
         } else {
           echo "Error updating record: " . $conn->error;
         }
-
+        if ($conn->query($sql2) === TRUE) {
+          echo "Record updated successfully";
+        } else {
+          echo "Error updating record: " . $conn->error;
+        }
         $conn->close();
 
         // Actualisation pour ne pas duppliquer la requête de formulaire
@@ -187,7 +194,11 @@
         } else {
           echo "Error updating record: " . $conn->error;
         }
-
+        if ($conn->query($sql2) === TRUE) {
+          echo "Record updated successfully";
+        } else {
+          echo "Error updating record: " . $conn->error;
+        }
         $conn->close();
 
         // Actualisation pour ne pas duppliquer la requête de formulaire
@@ -208,9 +219,39 @@
         }
 
         $idEffectifActuel = $data["id"];
-        $sql = "UPDATE effectif SET service='0', intervention='$nouveauStatut', vehicule='$nouveauVehicule', commentaire='$nouveauCommentaire', debutservice='' WHERE id=$idEffectifActuel";
+        $sql    = "UPDATE effectif SET service='0', intervention='$nouveauStatut', vehicule='$nouveauVehicule', commentaire='$nouveauCommentaire', debutservice='' WHERE id=$idEffectifActuel";
 
-        if ($conn->query($sql) === TRUE) {
+        $start_datetime = new DateTime($data["debutservice"]);
+        $end_datetime   = new DateTime('NOW');
+        $difference     = $start_datetime->diff($end_datetime);
+        echo $difference->days.' days total<br>';
+        echo $difference->y.' years<br>';
+        echo $difference->m.' months<br>';
+        echo $difference->d.' days<br>';
+        echo $difference->h.' hours<br>';
+        echo $difference->i.' minutes<br>';
+        echo $difference->s.' seconds<br>';
+        $heure = $difference->h;
+        $minute = $difference->i;
+        $seconde = $difference->s;
+
+//         $start_datetime = new DateTime($data["debutservice"]);
+//         $end_datetime = $start_date->diff(new DateTime('NOW'));
+//         echo $end_datetime->days.' days total<br>';
+//         echo $end_datetime->y.' years<br>';
+//         echo $end_datetime->m.' months<br>';
+//         echo $end_datetime->d.' days<br>';
+//         echo $since_start->h.' hours<br>';
+//         echo $since_start->i.' minutes<br>';
+//         echo $since_start->s.' seconds<br>';
+//         echo $since_start->s.' seconds<br>';
+
+//         echo "<script>console.log('interval: " . $interval . "' );</script>";
+//         echo "<script>console.log('hours_difference: " . $hours_difference . "' );</script>";
+//         echo "<script>console.log('diff_minutes: " . $diff_minutes . "' );</script>";
+        $sql2   = "UPDATE service SET finservice=now(), heure=$heure, minute=$minute, seconde=$seconde, dernier='0' WHERE effectif=$idEffectifActuel AND dernier='1' LIMIT 1";
+
+        if ($conn->query($sql) === TRUE && $conn->query($sql2) === TRUE) {
           echo "Record updated successfully";
         } else {
           echo "Error updating record: " . $conn->error;
