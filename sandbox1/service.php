@@ -427,7 +427,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td class="vehicleTitleStyle">
+                                    <td class="vehicleTitleStyle"> 
                                         &nbsp;
                                     </td>
                                 </tr>
