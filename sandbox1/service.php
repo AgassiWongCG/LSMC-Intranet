@@ -35,15 +35,13 @@
     $telephoneEffectifActuel = substr_replace($telephoneEffectifActuel, ' ', 3, 0);
     $telephoneEffectifActuel = substr_replace($telephoneEffectifActuel, ' ', 6, 0);
 
-
-
-
     //                                                       0      1          2              3        4      5       6      7         8       9
     $result                 = mysqli_query($connect, "SELECT id, effectif, debutservice, finservice, total, dernier, heure, minute, seconde, jour FROM service WHERE effectif=$idEffectifActuel");
 
     $result_total           = mysqli_query($connect, "SELECT SUM(seconde) AS seconde, SUM(minute) AS minute, SUM(heure) AS heure, SUM(jour) AS jour, dernier FROM service WHERE effectif=$idEffectifActuel AND dernier=0");
 
     while ($currentService = mysqli_fetch_row($result_total)) {
+
         $total_jour     = $currentService[3];
         $total_heure    = $currentService[2];
         $total_minute   = $currentService[1];
@@ -69,7 +67,6 @@
             $total_heure = $total_heure % 24;
             $total_jour = $total_jour + $jour_supp;
         }
-
 
     }
 ?>
@@ -299,13 +296,14 @@
     <table style="width: 100%; text-align: center; margin: 20px 0px 20px 0px;">
     	<tbody>
     		<tr>
-    			<td style="width: 25%;">
-    			    <a href="landing.php" class="btn btn-info btn-lg">Retour Profil</a>
+    			<td style="width: 33%;">
+    			    <a href="landing.php" class="btn btn-info btn-lg" style="margin: 0px 10px">Retour Profil</a>
+    			    <a href="landing.php" class="btn btn-info btn-lg" style="margin: 0px 10px">Mes heures</a>
     			</td>
-    			<td style="width: 50%; color: #aec3b0;">
+    			<td style="width: 34%; color: #aec3b0;">
     			    <h1>PRISE DE SERVICE</h1>
     			</td>
-    			<td style="width: 25%;">
+    			<td style="width: 33%;">
 
     			</td>
     		</tr>
@@ -333,7 +331,7 @@
                                     <td><?php echo $gradeEffectifActuel;?></td>
                                 </tr>
                                 <tr>
-                                    <td class="titleSummaryStyle">Rôle :</td>
+                                    <td class="titleSummaryStyle">Rôle(s) :</td>
                                     <td><?php echo $roleEffectifActuel;?></td>
                                 </tr>
                                 <tr>
@@ -348,10 +346,6 @@
                                 <tr>
                                     <td>&nbsp;</td>
                                     <td>&nbsp;</td>
-                                </tr>
-                                <tr>
-                                    <td class="titleSummaryStyle">Jour(s) Total(s) :</td>
-                                    <td><?php echo $total_jour?></td>
                                 </tr>
                                 <tr>
                                     <td class="titleSummaryStyle">Heure(s) Totale(s) :</td>
@@ -375,7 +369,7 @@
                             <tbody>
                                 <tr>
                                     <td class="statutTitleStyle">
-                                        Satut
+                                        Statut
                                     </td>
                                 </tr>
                                 <tr>
@@ -386,7 +380,6 @@
                                             <option value="Code 7">Code 7</option>
                                             <option value="Code 10">Code 10</option>
                                             <option value="Code 15">Code 15</option>
-                                            <option value="Autopsie">Autopsie</option>
                                             <option value="Morgue">Morgue</option>
                                             <option value="Fusillade">Fusillade</option>
                                             <option value="Consultation">Consultation</option>
@@ -394,8 +387,8 @@
                                             <option value="Formation">Formation</option>
                                             <option value="Examen">Examen</option>
                                             <option value="Rendez-vous">Rendez-vous</option>
-                                            <option value="Evenement">Évênement</option>
-                                            <option value="Reunion">Réunion</option>
+                                            <option value="Évênement">Évênement</option>
+                                            <option value="Réunion">Réunion</option>
                                             <option value="Gestion Direction">Gestion Direction</option>
                                         </select>
                                     </td>
@@ -413,16 +406,16 @@
                                 <tr>
                                     <td>
                                         <select name="Vehicule" class="selectInputStyle">
-                                            <option selected="selected" value="Aucune">Aucun</option>
+                                            <option selected="selected" value="Aucun">Aucun</option>
                                             <option value="Ambulance 1">Ambulance 1</option>
                                             <option value="Ambulance 2">Ambulance 2</option>
-                                            <option value="Vapide">Vapide</option>
-                                            <option value="4x4">4x4</option>
+                                            <option value="Vapid">Vapid</option>
                                             <option value="Caracara">Caracara</option>
                                             <option value="Alamo">Alamo</option>
                                             <option value="Predator">Predator</option>
                                             <option value="Buffalo Direction">Buffalo Direction</option>
-                                            <option value="Helicoptere">Helicoptere</option>
+                                            <option value="Hélicoptère">Hélicoptère</option>
+                                            <option value="Corbillard">Corbillard</option>
                                         </select>
                                     </td>
                                 </tr>
@@ -433,7 +426,7 @@
                                 </tr>
                                 <tr>
                                     <td class="remarksTitleStyle">
-                                        Unité | Remarques | Zone
+                                        Unité | Remarques
                                     </td>
                                 </tr>
                                 <tr>
@@ -469,7 +462,7 @@
     			<td style="width: 33%; vertical-align: top;">
                     <div style="margin: 50px; padding: 10px 10px 20px 10px; background-color: #aec3b0; border-radius: 10px;">
     			        <h4 class="bold underline" style="padding: 10px; color: #01161e;">Les Hôpitaux de Los Santos</h4>
-                        <table border=0 style="width: 100%; color: #01161e;">
+                        <table style="width: 100%; color: #01161e;">
                             <tbody>
                                 <tr>
                                     <td style="width: 25%;">&nbsp;</td>
@@ -512,8 +505,8 @@
             <th>Hôpital</th>
             <th>Prénom Nom</th>
             <th>Grade</th>
-            <th>Rôle</th>
-            <th>Agrégations</th>
+            <th>Rôle(s)</th>
+            <th>Agrégation(s)</th>
             <th>Téléphone</th>
             <th>Intervention</th>
             <th>Commentaire</th>
