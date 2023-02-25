@@ -1,6 +1,9 @@
 .bold {
     font-weight: bold;
 }
+.unbold {
+    font-weight: normal;
+}
 .underline {
     text-decoration: underline;
 }

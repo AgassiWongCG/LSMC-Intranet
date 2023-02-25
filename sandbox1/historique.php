@@ -162,6 +162,7 @@
         // Actualisation pour ne pas duppliquer la requête de formulaire
         header("Location: service.php");
     }
+
     ($connect = mysqli_connect("localhost", "root", "")) or die("erreur de connection à MySQL");
     mysqli_select_db($connect, "lsmc") or die("erreur de connexion à la base de données");
     $idEffectifActuel = $data["id"];

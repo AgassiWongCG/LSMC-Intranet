@@ -103,9 +103,20 @@
                 border-radius: 10px;
                 margin-bottom: 20px;
             }
-            .statutTitleStyle, .vehicleTitleStyle, .remarksTitleStyle {
+            .statutTitleStyle {
                 font-size: 1.5rem;
                 font-weight: bold;
+                color : #9e6240;
+            }
+            .vehicleTitleStyle {
+                font-size: 1.5rem;
+                font-weight: bold;
+                color : #dea47e;
+            }
+            .remarksTitleStyle {
+                font-size: 1.5rem;
+                font-weight: bold;
+                color : #cd4631;
             }
             .rowEffectifHeader {
                 background-color: #0F252E;
@@ -274,8 +285,16 @@
         //                                                       0      1          2         3        4      5     6         7        8            9            10          11            12
         $result                 = mysqli_query($connect, "SELECT id, hospital, firstname, lastname, grade, role, agregation, phone, intervention, commentaire, vehicule, debutservice, service FROM effectif WHERE service = true");
         $nbrTotalService        = mysqli_num_rows($result);
-        $nbrTotalService_LSMC   = mysqli_num_rows(mysqli_query($connect, "SELECT * FROM effectif WHERE service = true AND hospital = 'lsmc'"));
-        $nbrTotalService_BCMC   = mysqli_num_rows(mysqli_query($connect, "SELECT * FROM effectif WHERE service = true AND hospital = 'bcmc'"));
+
+        // LSMC
+        $nbrTotalService_LSMC       = mysqli_num_rows(mysqli_query($connect, "SELECT * FROM effectif WHERE service = true AND hospital = 'lsmc'"));
+        $nbrTotalService_LSMC_Code3 = mysqli_num_rows(mysqli_query($connect, "SELECT * FROM effectif WHERE service = true AND hospital = 'lsmc' AND intervention = 'Code 3'"));
+        $nbrTotalService_LSMC_Code6 = mysqli_num_rows(mysqli_query($connect, "SELECT * FROM effectif WHERE service = true AND hospital = 'lsmc' AND intervention = 'Code 6'"));
+
+        // BCMC
+        $nbrTotalService_BCMC       = mysqli_num_rows(mysqli_query($connect, "SELECT * FROM effectif WHERE service = true AND hospital = 'bcmc'"));
+        $nbrTotalService_BCMC_Code3 = mysqli_num_rows(mysqli_query($connect, "SELECT * FROM effectif WHERE service = true AND hospital = 'bcmc' AND intervention = 'Code 3'"));
+        $nbrTotalService_BCMC_Code6 = mysqli_num_rows(mysqli_query($connect, "SELECT * FROM effectif WHERE service = true AND hospital = 'bcmc' AND intervention = 'Code 6'"));
     ?>
     <table style="width: 100%; text-align: center; margin: 20px 0px 20px 0px;">
     	<tbody>
@@ -283,7 +302,7 @@
     			<td style="width: 25%;">
     			    <a href="landing.php" class="btn btn-info btn-lg">Retour Profil</a>
     			</td>
-    			<td style="width: 50%;">
+    			<td style="width: 50%; color: #aec3b0;">
     			    <h1>PRISE DE SERVICE</h1>
     			</td>
     			<td style="width: 25%;">
@@ -297,8 +316,8 @@
     	<tbody>
     		<tr>
     			<td style="width: 33%;">
-    			    <div style="margin: 50px; background-color: #aec3b0; border-radius: 10px;">
-    			        <h4 class="bold underline" style="padding: 20px; color: #01161e;">Fiche Récapitulative</h4>
+    			    <div style="margin: 50px; padding: 10px 10px 20px 10px; background-color: #aec3b0; border-radius: 10px;">
+    			        <h4 class="bold underline" style="padding: 10px; color: #01161e;">Fiche Récapitulative Hebdomadaire</h4>
                         <table style="width: 100%; color: #01161e;">
                             <tbody>
                                 <tr>
@@ -331,24 +350,20 @@
                                     <td>&nbsp;</td>
                                 </tr>
                                 <tr>
-                                    <td class="titleSummaryStyle">Jours Totals :</td>
+                                    <td class="titleSummaryStyle">Jour(s) Total(s) :</td>
                                     <td><?php echo $total_jour?></td>
                                 </tr>
                                 <tr>
-                                    <td class="titleSummaryStyle">Heures Totals :</td>
+                                    <td class="titleSummaryStyle">Heure(s) Totale(s) :</td>
                                     <td><?php echo $total_heure?></td>
                                 </tr>
                                 <tr>
-                                    <td class="titleSummaryStyle">Minutes Totals :</td>
+                                    <td class="titleSummaryStyle">Minute(s) Totale(s) :</td>
                                     <td><?php echo $total_minute?></td>
                                 </tr>
                                 <tr>
-                                    <td class="titleSummaryStyle">Secondes Totals :</td>
+                                    <td class="titleSummaryStyle">Seconde(s) Totale(s) :</td>
                                     <td><?php echo $total_seconde?></td>
-                                </tr>
-                                <tr>
-                                    <td>&nbsp;</td>
-                                    <td>&nbsp;</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -451,15 +466,45 @@
                         '?>
                     </form>
     			</td>
-    			<td style="width: 33%;">&nbsp;</td>
+    			<td style="width: 33%; vertical-align: top;">
+                    <div style="margin: 50px; padding: 10px 10px 20px 10px; background-color: #aec3b0; border-radius: 10px;">
+    			        <h4 class="bold underline" style="padding: 10px; color: #01161e;">Les Hôpitaux de Los Santos</h4>
+                        <table border=0 style="width: 100%; color: #01161e;">
+                            <tbody>
+                                <tr>
+                                    <td style="width: 25%;">&nbsp;</td>
+                                    <td class="bold" style="width: 25%;">LSMC</td>
+                                    <td class="bold" style="width: 25%;">BCMC</td>
+                                    <td class="bold" style="width: 25%;">Total</td>
+                                </tr>
+                                <tr>
+                                    <td class="bold">En Service</td>
+                                    <td><?php echo $nbrTotalService_LSMC ?></td>
+                                    <td><?php echo $nbrTotalService_BCMC ?></td>
+                                    <td><?php echo $nbrTotalService ?></td>
+                                </tr>
+                                <tr>
+                                    <td class="bold">Code 3</td>
+                                    <td><?php echo $nbrTotalService_LSMC_Code3 ?></td>
+                                    <td><?php echo $nbrTotalService_BCMC_Code3 ?></td>
+                                    <td><?php echo $nbrTotalService_LSMC_Code3 + $nbrTotalService_BCMC_Code3 ?></td>
+                                </tr>
+                                <tr>
+                                    <td class="bold">Code 6</td>
+                                    <td><?php echo $nbrTotalService_LSMC_Code6 ?></td>
+                                    <td><?php echo $nbrTotalService_BCMC_Code6 ?></td>
+                                    <td><?php echo $nbrTotalService_LSMC_Code6 + $nbrTotalService_BCMC_Code6 ?></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+    			</td>
     		</tr>
     	</tbody>
     </table>
 
-
-    <p>Nombre en Service : <?php echo $nbrTotalService ?></p>
-    <p>Nombre en Service LSMC : <?php echo $nbrTotalService_LSMC ?></p>
-    <p>Nombre en Service BCMC : <?php echo $nbrTotalService_BCMC ?></p>
+    <br/>
 
     <table border="1" cellpadding="10px" cellspacing="10px" style="width: 95%; margin: 0px 50px 0px 50px;">
         <tr class="rowEffectifHeader">

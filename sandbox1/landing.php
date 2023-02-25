@@ -44,7 +44,7 @@ $data = $req->fetch();
                         <h1 class="p-5">Bonjour <?php echo $data[
                             "pseudo"
                         ]; ?> !</h1>
-                        <hr />
+                        <hr/>
                         <a href="deconnexion.php" class="btn btn-danger btn-lg">Déconnexion</a>
                         <a href="service.php" class="btn btn-danger btn-lg">Prise de Service</a>
                         <a href="historique.php" class="btn btn-danger btn-lg">Historique</a>
