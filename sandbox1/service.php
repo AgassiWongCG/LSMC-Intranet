@@ -61,12 +61,12 @@
             $total_heure = $total_heure + $heure_supp;
         }
 
-        $jour_supp = 0;
-        if ($total_heure > 23) {
-            $jour_supp = intval($total_heure / 24);
-            $total_heure = $total_heure % 24;
-            $total_jour = $total_jour + $jour_supp;
-        }
+//         $jour_supp = 0;
+//         if ($total_heure > 23) {
+//             $jour_supp = intval($total_heure / 24);
+//             $total_heure = $total_heure % 24;
+//             $total_jour = $total_jour + $jour_supp;
+//         }
 
     }
 ?>
@@ -91,7 +91,11 @@
                 border-radius: 10px;
                 margin-bottom: 20px;
 		    }
-
+ 		    .code99TitleStyle {
+                font-size: 1.5rem;
+                font-weight: bold;
+                color : #d90368;
+ 		    }
             .textInputStyle {
                 width: 300px;
                 height: 40px;
@@ -168,6 +172,11 @@
 			function errorCheck_FinDeService() {
 
 			}
+
+            // Info : Gestion d'erreur Code 99
+            function errorCheck_Code99() {
+
+            }
 		</script>
 	</head>
 	<body style="width: 100%; text-align: center;">
@@ -236,6 +245,33 @@
             header("Location: service.php");
         }
 
+        // Info : Méthode pour envoyer un effectif en Code 99
+        if (isset($_POST["button_Code99"])) {
+
+            // Info : Récupération des paramètres du formulaire
+            $idEffectifCible    = $_POST['CibleCode99'];
+
+            // Info : Création de la connexion + Vérification de la connexion
+            $conn = new mysqli($servername, $username, $password, $dbname);
+            if ($conn->connect_error) {
+              die("Connection failed: " . $conn->connect_error);
+            }
+
+            if ($data["deservice"] === 1 && $idEffectifCible <> 'Aucun') {
+                $sql = "UPDATE effectif SET service='0' WHERE id=$idEffectifCible";
+
+                if ($conn->query($sql) === TRUE) {
+                    echo "Record updated successfully";
+                } else {
+                    echo "Error updating record: " . $conn->error;
+                }
+                $conn->close();
+            }
+
+            // Info : Actualisation vers la même page pour ne pas duppliquer la requête de formulaire
+            header("Location: service.php");
+        }
+
         if (isset($_POST["button_FinDeService"])) {
 
             $nouveauStatut      = "";
@@ -277,11 +313,12 @@
             // Info : Actualisation vers la même page pour ne pas duppliquer la requête de formulaire
             header("Location: service.php");
         }
+
         ($connect = mysqli_connect("localhost", "root", "")) or die("erreur de connection à MySQL");
         mysqli_select_db($connect, "lsmc") or die("erreur de connexion à la base de données");
-        //                                                       0      1          2         3        4      5     6         7        8            9            10          11            12
-        $result                 = mysqli_query($connect, "SELECT id, hospital, firstname, lastname, grade, role, agregation, phone, intervention, commentaire, vehicule, debutservice, service FROM effectif WHERE service = true");
-        $nbrTotalService        = mysqli_num_rows($result);
+        //                                                           0      1          2         3        4      5     6         7        8            9            10          11            12
+        $result                     = mysqli_query($connect, "SELECT id, hospital, firstname, lastname, grade, role, agregation, phone, intervention, commentaire, vehicule, debutservice, service FROM effectif WHERE service = true");
+        $nbrTotalService            = mysqli_num_rows($result);
 
         // LSMC
         $nbrTotalService_LSMC       = mysqli_num_rows(mysqli_query($connect, "SELECT * FROM effectif WHERE service = true AND hospital = 'lsmc'"));
@@ -292,19 +329,28 @@
         $nbrTotalService_BCMC       = mysqli_num_rows(mysqli_query($connect, "SELECT * FROM effectif WHERE service = true AND hospital = 'bcmc'"));
         $nbrTotalService_BCMC_Code3 = mysqli_num_rows(mysqli_query($connect, "SELECT * FROM effectif WHERE service = true AND hospital = 'bcmc' AND intervention = 'Code 3'"));
         $nbrTotalService_BCMC_Code6 = mysqli_num_rows(mysqli_query($connect, "SELECT * FROM effectif WHERE service = true AND hospital = 'bcmc' AND intervention = 'Code 6'"));
+
+        // CODE 99 LISTE
+        $EffectifCibleCode99 = null;
+        if ($data["hospital"] === 'lsmc') {
+            $EffectifCibleCode99        = mysqli_query($connect, "SELECT id, firstname, lastname, intervention, service FROM effectif WHERE service = true AND hospital='lsmc' ");
+        }
+        if ($data["hospital"] === 'bcmc') {
+            $EffectifCibleCode99        = mysqli_query($connect, "SELECT id, firstname, lastname, intervention, service FROM effectif WHERE service = true AND hospital='bcmc' ");
+        }
     ?>
     <table style="width: 100%; text-align: center; margin: 20px 0px 20px 0px;">
     	<tbody>
     		<tr>
     			<td style="width: 33%;">
     			    <a href="landing.php" class="btn btn-info btn-lg" style="margin: 0px 10px">Retour Profil</a>
-    			    <a href="landing.php" class="btn btn-info btn-lg" style="margin: 0px 10px">Mes heures</a>
+    			    <a href="landing.php" class="btn btn-info btn-lg" style="margin: 0px 10px">Mes Heures</a>
     			</td>
     			<td style="width: 34%; color: #aec3b0;">
     			    <h1>PRISE DE SERVICE</h1>
     			</td>
     			<td style="width: 33%;">
-
+                    &nbsp;
     			</td>
     		</tr>
     	</tbody>
@@ -460,6 +506,7 @@
                     </form>
     			</td>
     			<td style="width: 33%; vertical-align: top;">
+
                     <div style="margin: 50px; padding: 10px 10px 20px 10px; background-color: #aec3b0; border-radius: 10px;">
     			        <h4 class="bold underline" style="padding: 10px; color: #01161e;">Les Hôpitaux de Los Santos</h4>
                         <table style="width: 100%; color: #01161e;">
@@ -490,6 +537,49 @@
                                 </tr>
                             </tbody>
                         </table>
+                    </div>
+
+                    <?php if($data["deservice"] === 1) echo '
+                    <div style="margin: 50px; padding: 10px 10px 20px 10px; background-color: #ff8484; border-radius: 10px;">
+    			        <h4 class="bold underline" style="padding: 10px; color: #c82333;">Gestion Rapide Direction</h4>
+
+                            <form method="post" action="service.php" style="width: 100%; text-align: center;">
+                                <table style="width: 100%; text-align: center;">
+                                    <tbody>
+                                        <tr>
+                                            <td class="code99TitleStyle">
+                                                Effectif ciblé
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <select name="CibleCode99" class="selectInputStyle" style="width: 90% !important;">
+                                                    <option selected="selected" value="Aucun">Aucun</option>'?>
+                                                    <?php
+                                                        while ($rowEffectifCode99 = mysqli_fetch_row($EffectifCibleCode99)) {
+                                                            // id, firstname, lastname, intervention, service
+                                                            $effectifCode99id                 = $rowEffectifCode99[0];
+                                                            $effectifCode99firstname          = ucfirst($rowEffectifCode99[1]);
+                                                            $effectifCode99lastname           = ucfirst($rowEffectifCode99[2]);
+                                                            $effectifCode99intervention       = ucfirst($rowEffectifCode99[3]);
+                                                            $effectifCode99service            = ucfirst($rowEffectifCode99[4]);
+
+                                                            // Info : Reformattage Textuel
+                                                            $fullEffectifLine   = $effectifCode99firstname." ".$effectifCode99lastname." - ".$effectifCode99intervention;
+                                                            if($data["deservice"] === 1) {
+                                                                echo "<option value=".$effectifCode99id.">".$fullEffectifLine."</option>";
+                                                            }
+                                                        }
+                                                    ?>
+                                                <?php if($data["deservice"] === 1) echo '
+                                                </select>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <input type="submit" onmousover="errorCheck_Code99()" name="button_Code99" value="Envoyer en Code 99" class="btn btn-secondary btn-lg"/>
+                            </form>'?>
+
                     </div>
 
     			</td>

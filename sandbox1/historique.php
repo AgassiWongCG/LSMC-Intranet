@@ -65,6 +65,7 @@
 
 	<body style="width: 100%; text-align: center;">
         <a href="landing.php" class="btn btn-danger btn-lg">Retour Profil</a><br/>
+        <a href="landing.php" class="btn btn-danger btn-lg">Retour Profil</a><br/>
 <?php
     // Info : Donnée de connexion au serveur phpmyadmin
     $servername = "localhost";
@@ -194,7 +195,7 @@
         }
 
         $jour_supp = 0;
-        if ($total_minute > 23) {
+        if ($total_heure > 23) {
             $jour_supp = intval($total_heure / 24);
             $total_heure = $total_heure % 24;
             $total_jour = $total_jour + $jour_supp;
@@ -207,7 +208,7 @@
     }
 
     // Récupération des résultats
-    echo '  <table border="1" cellpadding="2" cellspacing="2">
+    echo '  <table border="1" cellpadding="2" cellspacing="2" style="width:100%">
                 <tr>
                     <th>Id</th>
                     <th>Début Service</th>
