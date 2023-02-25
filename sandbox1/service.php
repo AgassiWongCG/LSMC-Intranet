@@ -556,6 +556,14 @@
     $phone = substr_replace($phone, ' ', 3, 0);
     $phone = substr_replace($phone, ' ', 6, 0);
     if ($commentaire === '') { $commentaire = 'Aucun'; }
+
+    $rowYear        = substr($debutservice, 0, 4);
+    $rowMonth       = substr($debutservice, 5, 2);
+    $rowDay         = substr($debutservice, 8, 2);
+    $rowHour        = substr($debutservice, 11, 2);
+    $rowMinute      = substr($debutservice, 14, 2);
+    $debutservice   = $rowDay.'/'.$rowMonth.'/'.$rowYear.' à '.$rowHour.'h'.$rowMinute;
+
     echo "
         <tr class='$rowAppliedClass'>
             <td>$id</td>
