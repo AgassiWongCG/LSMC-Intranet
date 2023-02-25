@@ -131,13 +131,6 @@
     $password   = "";
     $dbname     = "lsmc";
 
-    function differenceInHours($startdate,$enddate){
-        $starttimestamp = strtotime($startdate);
-        $endtimestamp = strtotime($enddate);
-        $difference = abs($endtimestamp - $starttimestamp)/3600;
-        return $difference;
-    }
-
     if (isset($_POST["button_PriseDeService"])) {
 
         $nouveauStatut      = $_POST['Statut'];
@@ -269,12 +262,11 @@
     $nbrTotalService        = mysqli_num_rows($result);
     $nbrTotalService_LSMC   = mysqli_num_rows(mysqli_query($connect, "SELECT * FROM effectif WHERE service = true AND hospital = 'lsmc'"));
     $nbrTotalService_BCMC   = mysqli_num_rows(mysqli_query($connect, "SELECT * FROM effectif WHERE service = true AND hospital = 'bcmc'"));
-
-    // Récupération des résultats
-    echo "<p>Nombre en Service : $nbrTotalService</p>";
-    echo "<p>Nombre en Service LSMC : $nbrTotalService_LSMC</p>";
-    echo "<p>Nombre en Service BCMC : $nbrTotalService_BCMC</p>";
-    echo '  <table border="1" cellpadding="2" cellspacing="2">
+?>
+    <p>Nombre en Service : <?php echo $nbrTotalService ?></p>
+    <p>Nombre en Service LSMC : <?php echo $nbrTotalService_LSMC ?></p>
+    <p>Nombre en Service BCMC : <?php echo $nbrTotalService_BCMC ?></p>
+    <table border="1" cellpadding="2" cellspacing="2">
                 <tr>
                     <th>Id</th>
                     <th>Hôpital</th>
@@ -287,8 +279,8 @@
                     <th>Commentaire</th>
                     <th>Véhicule</th>
                     <th>Début du service</th>
-                </tr>';
-    while ($row = mysqli_fetch_row($result)) {
+                </tr>
+<?php    while ($row = mysqli_fetch_row($result)) {
         $id                 = $row[0];
         $hopital            = $row[1];
         $prenom             = $row[2];
@@ -305,7 +297,7 @@
 
     echo "<tr>
             <td>$id</td>
-            <td>$phone</td>
+            <td>$hopital</td>
             <td>$prenom $nom</td>
             <td>$grade</td>
             <td>$role</td>
@@ -317,7 +309,8 @@
             <td>$debutservice</td>
         </tr>";
     }
-
+?>
+<?php
     //Déconnexion de la base de données
     mysqli_close($connect);
 ?>
