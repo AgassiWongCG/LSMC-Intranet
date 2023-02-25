@@ -17,6 +17,25 @@
     ($connect = mysqli_connect("localhost", "root", "")) or die("erreur de connection à MySQL");
     mysqli_select_db($connect, "lsmc") or die("erreur de connexion à la base de données");
     $idEffectifActuel = $data["id"];
+    $prenomEffectifActuel = $data["firstname"];
+    $nomEffectifActuel = $data["lastname"];
+    $hopitalEffectifActuel = $data["hospital"];
+    $gradeEffectifActuel = $data["grade"];
+    $roleEffectifActuel = $data["role"];
+    $agregationsEffectifActuel = $data["agregation"];
+    $telephoneEffectifActuel = $data["phone"];
+
+    // Info : Reformattage Textuel
+    $hopitalEffectifActuel = strtoupper($hopitalEffectifActuel);
+    $prenomEffectifActuel = ucfirst($prenomEffectifActuel);
+    $nomEffectifActuel = ucfirst($nomEffectifActuel);
+    $gradeEffectifActuel = ucfirst($gradeEffectifActuel);
+    $roleEffectifActuel = ucfirst($roleEffectifActuel);
+    $telephoneEffectifActuel = substr_replace($telephoneEffectifActuel, ' ', 3, 0);
+    $telephoneEffectifActuel = substr_replace($telephoneEffectifActuel, ' ', 6, 0);
+
+
+
 
     //                                                       0      1          2              3        4      5       6      7         8       9
     $result                 = mysqli_query($connect, "SELECT id, effectif, debutservice, finservice, total, dernier, heure, minute, seconde, jour FROM service WHERE effectif=$idEffectifActuel");
@@ -263,10 +282,10 @@
     	<tbody>
     		<tr>
     			<td style="width: 25%;">
-    			    <a href="landing.php" class="btn btn-danger btn-lg">Retour Profil</a>
+    			    <a href="landing.php" class="btn btn-info btn-lg">Retour Profil</a>
     			</td>
     			<td style="width: 50%;">
-    			    <h1>Prise de service</h1>
+    			    <h1>PRISE DE SERVICE</h1>
     			</td>
     			<td style="width: 25%;">
 
@@ -283,34 +302,35 @@
                         <tbody>
                             <tr>
                                 <td style="width: 50%;" class="titleSummaryStyle">Prénom :</td>
-                                <td style="width: 50%;"><?php echo ucfirst($data["firstname"]);?></td>
+                                <td style="width: 50%;"><?php echo $prenomEffectifActuel;?></td>
                             </tr>
                             <tr>
                                 <td class="titleSummaryStyle">Nom :</td>
-                                <td><?php echo ucfirst($data["lastname"]);?></td>
+                                <td><?php echo $nomEffectifActuel;?></td>
                             </tr>
                             <tr>
                                 <td class="titleSummaryStyle">Grade :</td>
-                                <td><?php echo ucfirst($data["grade"]);?></td>
+                                <td><?php echo $gradeEffectifActuel;?></td>
                             </tr>
                             <tr>
                                 <td class="titleSummaryStyle">Rôle :</td>
-                                <td><?php echo ucfirst($data["role"]);?></td>
+                                <td><?php echo $roleEffectifActuel;?></td>
                             </tr>
                             <tr>
                                 <td class="titleSummaryStyle">Agrégations :</td>
-                                <td><?php echo ucfirst($data["agregation"]);?></td>
+                                <td><?php echo $agregationsEffectifActuel;?></td>
                             </tr>
                             <tr>
                                 <td class="titleSummaryStyle">Téléphone :</td>
-                                <td><?php echo ucfirst($data["phone"]);?></td>
+                                <td><?php echo $telephoneEffectifActuel;?></td>
+                                </td>
                             </tr>
                             <tr>
                                 <td>&nbsp;</td>
                                 <td>&nbsp;</td>
                             </tr>
                             <tr>
-                                <td class="titleSummaryStyle">Temps total de Service Effectué cette semaine:</td>
+                                <td class="titleSummaryStyle">Temps total de Service Effectué cette semaine :</td>
                                 <td>Jour(s) : <?php echo $total_jour?><br/>Heure(s) : <?php echo $total_heure?><br/>Minute(s) : <?php echo $total_minute?><br/>Seconde(s) : <?php echo $total_seconde?></td>
                             </tr>
                         </tbody>
@@ -394,7 +414,7 @@
                             <table style="width: 100%;">
                                 <tr>
                                     <td style="width: 100%;">
-                                        <input type="submit" onmousover="errorCheck_PriseDeService()" name="button_PriseDeService" value="Prise de Service" class="btn btn-danger btn-lg"/>
+                                        <input type="submit" onmousover="errorCheck_PriseDeService()" name="button_PriseDeService" value="Prise de Service" class="btn btn-success btn-lg"/>
                                     </td>
                                 </tr>
                             </table>
@@ -403,7 +423,7 @@
                             <table style="width: 100%;">
                                 <tr>
                                     <td style="width: 50%; text-align: right; padding: 20px;">
-                                        <input type="submit" onmousover="errorCheck_MiseAJour()" name="button_MiseAJour" value="Mettre à jour" class="btn btn-danger btn-lg"/>
+                                        <input type="submit" onmousover="errorCheck_MiseAJour()" name="button_MiseAJour" value="Mettre à jour" class="btn btn-warning btn-lg"/>
                                     </td>
                                     <td style="width: 50%; text-align: left; padding: 20px;">
                                         <input type="submit" onmousover="errorCheck_FinDeService()" name="button_FinDeService" value="Fin de service" class="btn btn-danger btn-lg"/>
