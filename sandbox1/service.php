@@ -30,6 +30,7 @@
     $prenomEffectifActuel = ucfirst($prenomEffectifActuel);
     $nomEffectifActuel = ucfirst($nomEffectifActuel);
     $gradeEffectifActuel = ucfirst($gradeEffectifActuel);
+    if ($agregationsEffectifActuel === '') { $agregationsEffectifActuel = 'Aucune'; }
     $roleEffectifActuel = ucfirst($roleEffectifActuel);
     $telephoneEffectifActuel = substr_replace($telephoneEffectifActuel, ' ', 3, 0);
     $telephoneEffectifActuel = substr_replace($telephoneEffectifActuel, ' ', 6, 0);
@@ -77,6 +78,7 @@
 	<head>
 		<title>Prise de Service</title>
 		<link rel="stylesheet" href="./css/style.css">
+		<link rel="stylesheet" href="./css/tools.css">
 		<style>
             /* PALETTE COULEURS */
 		    /* https://coolors.co/01161e-124559-598392-aec3b0-eff6e0 */
@@ -113,9 +115,6 @@
             }
             .rowEffectifImpair {
                 background-color: #3080A0;
-            }
-            .bold {
-                font-weight: bold;
             }
             .titleSummaryStyle {
                 font-weight: bold;
@@ -298,43 +297,62 @@
     	<tbody>
     		<tr>
     			<td style="width: 33%;">
-                    <table style="width: 100%;">
-                        <tbody>
-                            <tr>
-                                <td style="width: 50%;" class="titleSummaryStyle">Prénom :</td>
-                                <td style="width: 50%;"><?php echo $prenomEffectifActuel;?></td>
-                            </tr>
-                            <tr>
-                                <td class="titleSummaryStyle">Nom :</td>
-                                <td><?php echo $nomEffectifActuel;?></td>
-                            </tr>
-                            <tr>
-                                <td class="titleSummaryStyle">Grade :</td>
-                                <td><?php echo $gradeEffectifActuel;?></td>
-                            </tr>
-                            <tr>
-                                <td class="titleSummaryStyle">Rôle :</td>
-                                <td><?php echo $roleEffectifActuel;?></td>
-                            </tr>
-                            <tr>
-                                <td class="titleSummaryStyle">Agrégations :</td>
-                                <td><?php echo $agregationsEffectifActuel;?></td>
-                            </tr>
-                            <tr>
-                                <td class="titleSummaryStyle">Téléphone :</td>
-                                <td><?php echo $telephoneEffectifActuel;?></td>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>&nbsp;</td>
-                                <td>&nbsp;</td>
-                            </tr>
-                            <tr>
-                                <td class="titleSummaryStyle">Temps total de Service Effectué cette semaine :</td>
-                                <td>Jour(s) : <?php echo $total_jour?><br/>Heure(s) : <?php echo $total_heure?><br/>Minute(s) : <?php echo $total_minute?><br/>Seconde(s) : <?php echo $total_seconde?></td>
-                            </tr>
-                        </tbody>
-                    </table>
+    			    <div style="margin: 50px; background-color: #aec3b0; border-radius: 10px;">
+    			        <h4 class="bold underline" style="padding: 20px; color: #01161e;">Fiche Récapitulative</h4>
+                        <table style="width: 100%; color: #01161e;">
+                            <tbody>
+                                <tr>
+                                    <td style="width: 50%;" class="titleSummaryStyle">Prénom :</td>
+                                    <td style="width: 50%;"><?php echo $prenomEffectifActuel;?></td>
+                                </tr>
+                                <tr>
+                                    <td class="titleSummaryStyle">Nom :</td>
+                                    <td><?php echo $nomEffectifActuel;?></td>
+                                </tr>
+                                <tr>
+                                    <td class="titleSummaryStyle">Grade :</td>
+                                    <td><?php echo $gradeEffectifActuel;?></td>
+                                </tr>
+                                <tr>
+                                    <td class="titleSummaryStyle">Rôle :</td>
+                                    <td><?php echo $roleEffectifActuel;?></td>
+                                </tr>
+                                <tr>
+                                    <td class="titleSummaryStyle">Agrégations :</td>
+                                    <td><?php echo $agregationsEffectifActuel;?></td>
+                                </tr>
+                                <tr>
+                                    <td class="titleSummaryStyle">Téléphone :</td>
+                                    <td><?php echo $telephoneEffectifActuel;?></td>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                </tr>
+                                <tr>
+                                    <td class="titleSummaryStyle">Jours Totals :</td>
+                                    <td><?php echo $total_jour?></td>
+                                </tr>
+                                <tr>
+                                    <td class="titleSummaryStyle">Heures Totals :</td>
+                                    <td><?php echo $total_heure?></td>
+                                </tr>
+                                <tr>
+                                    <td class="titleSummaryStyle">Minutes Totals :</td>
+                                    <td><?php echo $total_minute?></td>
+                                </tr>
+                                <tr>
+                                    <td class="titleSummaryStyle">Secondes Totals :</td>
+                                    <td><?php echo $total_seconde?></td>
+                                </tr>
+                                <tr>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </td>
     			<td style="width: 34%;">
                     <form method="post" action="service.php" style="width: 100%; text-align: center;">
@@ -489,9 +507,10 @@
     $nom = ucfirst($nom);
     $grade = ucfirst($grade);
     $role = ucfirst($role);
+    if ($agregations === '') { $agregations = 'Aucune'; }
     $phone = substr_replace($phone, ' ', 3, 0);
     $phone = substr_replace($phone, ' ', 6, 0);
-
+    if ($commentaire === '') { $commentaire = 'Aucun'; }
     echo "
         <tr class='$rowAppliedClass'>
             <td>$id</td>
