@@ -64,7 +64,7 @@
         }
 
         $jour_supp = 0;
-        if ($total_minute > 23) {
+        if ($total_heure > 23) {
             $jour_supp = intval($total_heure / 24);
             $total_heure = $total_heure % 24;
             $total_jour = $total_jour + $jour_supp;
