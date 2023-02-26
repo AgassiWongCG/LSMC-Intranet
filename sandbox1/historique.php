@@ -65,7 +65,7 @@
 
 	<body style="width: 100%; text-align: center;">
         <a href="landing.php" class="btn btn-danger btn-lg">Retour Profil</a><br/>
-        <a href="landing.php" class="btn btn-danger btn-lg">Retour Profil</a><br/>
+        <a href="service.php" class="btn btn-danger btn-lg">Retour Prise de Service</a><br/>
 <?php
     // Info : Donnée de connexion au serveur phpmyadmin
     $servername = "localhost";
