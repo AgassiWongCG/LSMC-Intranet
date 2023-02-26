@@ -42,18 +42,75 @@
             } ?>
             
             <form action="inscription_traitement.php" method="post">
-                <h2 class="text-center">Inscription</h2>       
+                <h2 class="text-center">Inscription EMS - LSMC</h2>
                 <div class="form-group">
+                    <label for="firstname">Prénom</label>
+                    <input type="text" name="firstname" class="form-control" placeholder="Prénom" required="required" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label for="lastname">Nom</label>
+                    <input type="text" name="lastname" class="form-control" placeholder="Nom" required="required" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label for="pseudo">Pseudo</label>
                     <input type="text" name="pseudo" class="form-control" placeholder="Pseudo" required="required" autocomplete="off">
                 </div>
                 <div class="form-group">
+                    <label for="email">Email</label>
                     <input type="email" name="email" class="form-control" placeholder="Email" required="required" autocomplete="off">
                 </div>
                 <div class="form-group">
+                    <label for="phone">Téléphone</label>
+                    <input type="number" name="phone" class="form-control" placeholder="Téléphone" required="required" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label for="password">Mot de passe</label>
                     <input type="password" name="password" class="form-control" placeholder="Mot de passe" required="required" autocomplete="off">
                 </div>
                 <div class="form-group">
+                    <label for="password_retype">Confirmation du mot de passe</label>
                     <input type="password" name="password_retype" class="form-control" placeholder="Re-tapez le mot de passe" required="required" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label for="grade">Grade</label>
+                    <select name="grade" class="form-control" required="required">
+                        <option value="volvo">Volvo</option>
+                        <option value="saab">Saab</option>
+                        <option value="opel">Opel</option>
+                        <option value="audi">Audi</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="agregation">Agrégation(s)</label>
+                    <select name="agregation" class="form-control" required="required" multiple>
+                        <option value="volvo">Volvo</option>
+                        <option value="saab">Saab</option>
+                        <option value="opel">Opel</option>
+                        <option value="audi">Audi</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="role">Rôles</label>
+                    <select name="role" class="form-control" required="required" multiple>
+                        <option value="volvo">Volvo</option>
+                        <option value="saab">Saab</option>
+                        <option value="opel">Opel</option>
+                        <option value="audi">Audi</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="deservice">Droit Code 99</label>
+                    <select name="deservice" class="form-control" required="required">
+                        <option value="0" selected>Non</option>
+                        <option value="1">Oui</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="register">Droit Création Compte EMS</label>
+                    <select name="register" class="form-control" required="required">
+                        <option value="0" selected>Non</option>
+                        <option value="1">Oui</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <button type="submit" class="btn btn-primary btn-block">Inscription</button>

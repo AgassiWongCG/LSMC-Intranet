@@ -559,33 +559,19 @@
     			</td>
     			<td style="width: 33%; vertical-align: top;">
 
-                    <div style="margin: 50px; padding: 10px 10px 20px 10px; background-color: #aec3b0; border-radius: 10px;">
+                    <div style="margin: 50px; padding: 10px 10px 20px 10px; background-color: #dcc1e9; border-radius: 10px;">
     			        <h4 class="bold underline" style="padding: 10px; color: #01161e;">Hôpital Los Santos Medical Center</h4>
                         <table style="width: 100%; color: #01161e;">
                             <tbody>
                                 <tr>
-                                    <td style="width: 25%;">&nbsp;</td>
-                                    <td class="bold" style="width: 25%;">LSMC</td>
-                                    <td class="bold" style="width: 25%;">BCMC</td>
-                                    <td class="bold" style="width: 25%;">Total</td>
+                                    <td class="bold" style="width: 33%;">En Service</td>
+                                    <td class="bold" style="width: 33%;">Code 3</td>
+                                    <td class="bold" style="width: 33%;">Code 6</td>
                                 </tr>
                                 <tr>
-                                    <td class="bold">En Service</td>
                                     <td><?php echo $nbrTotalService_LSMC ?></td>
-                                    <td><?php echo $nbrTotalService_BCMC ?></td>
-                                    <td><?php echo $nbrTotalService ?></td>
-                                </tr>
-                                <tr>
-                                    <td class="bold">Code 3</td>
                                     <td><?php echo $nbrTotalService_LSMC_Code3 ?></td>
-                                    <td><?php echo $nbrTotalService_BCMC_Code3 ?></td>
-                                    <td><?php echo $nbrTotalService_LSMC_Code3 + $nbrTotalService_BCMC_Code3 ?></td>
-                                </tr>
-                                <tr>
-                                    <td class="bold">Code 6</td>
-                                    <td><?php echo $nbrTotalService_LSMC_Code6 ?></td>
                                     <td><?php echo $nbrTotalService_BCMC_Code6 ?></td>
-                                    <td><?php echo $nbrTotalService_LSMC_Code6 + $nbrTotalService_BCMC_Code6 ?></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -641,8 +627,8 @@
     </table>
 
     <br/>
-    <div style="width: 100%; padding: 0px 10px;">
-        <table border="1" cellpadding="10px" cellspacing="10px" style="width: 100%; padding: 0px 10px;">
+    <div style="width: 100%; padding: 0px 25px;">
+        <table border="1" cellpadding="10px" cellspacing="10px" style="width: 100%;">
             <tr class="rowEffectifHeader">
                 <th>Id</th>
                 <th>Prénom Nom</th>
