@@ -3,8 +3,6 @@
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <meta name="author" content="NoS1gnal"/>
-
             <link href="./css/magnificPopup.css" rel="stylesheet" />
             <link rel="stylesheet" href="./css/style.css">
             <title>Inscription</title>
@@ -41,7 +39,7 @@
                         <?php }
             } ?>
             
-            <form action="inscription_traitement.php" method="post">
+            <form action="./inscription_traitement.php" method="post">
                 <h2 class="text-center">Inscription EMS - LSMC</h2>
                 <div class="form-group">
                     <label for="firstname">Prénom</label>

@@ -1,16 +1,17 @@
 <?php
-session_start();
-require_once "config.php"; // ajout connexion bdd
-// si la session existe pas soit si l'on est pas connecté on redirige
-if (!isset($_SESSION["user"])) {
-    header("Location:index.php");
-    die();
-}
+    session_start();
+    require_once "./config.php"; // ajout connexion bdd
+    // si la session existe pas soit si l'on est pas connecté on redirige
+    if (!isset($_SESSION["user"])) {
+        header("Location: ./index.php");
+        die();
+    }
 
-// On récupere les données de l'utilisateur
-$req = $bdd->prepare("SELECT * FROM effectif WHERE token = ?");
-$req->execute([$_SESSION["user"]]);
-$data = $req->fetch();
+    // On récupere les données de l'utilisateur
+    $req = $bdd->prepare("SELECT * FROM effectif WHERE token = ?");
+    $req->execute([$_SESSION["user"]]);
+    $data = $req->fetch();
+
 ?>
 <!doctype html>
 <html lang="en">
@@ -45,9 +46,9 @@ $data = $req->fetch();
                             "pseudo"
                         ]; ?> !</h1>
                         <hr/>
-                        <a href="deconnexion.php" class="btn btn-danger btn-lg">Déconnexion</a>
-                        <a href="service.php" class="btn btn-danger btn-lg">Prise de Service</a>
-                        <a href="historique.php" class="btn btn-danger btn-lg">Historique</a>
+                        <a href="./deconnexion.php" class="btn btn-danger btn-lg">Déconnexion</a>
+                        <a href="./service.php" class="btn btn-danger btn-lg">Prise de Service</a>
+                        <a href="./historique.php" class="btn btn-danger btn-lg">Historique</a>
                         <!-- Button trigger modal -->
                         <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#change_password">
                           Changer mon mot de passe
@@ -72,7 +73,7 @@ $data = $req->fetch();
                             </button>
                          </div>
                             <div class="modal-body">
-                                <form action="change_password.php" method="POST">
+                                <form action="./change_password.php" method="POST">
                                     <label for='current_password'>Mot de passe actuel</label>
                                     <input type="password" id="current_password" name="current_password" class="form-control" required/>
                                     <br />
@@ -102,7 +103,7 @@ $data = $req->fetch();
                                 </button>
                         </div>
                         <div class="modal-body">
-                            <form action="layouts/change_avatar.php" method="POST" enctype="multipart/form-data">
+                            <form action="./layouts/change_avatar.php" method="POST" enctype="multipart/form-data">
                                 <label for="avatar">Images autorisées : png, jpg, jpeg, gif - max 20Mo</label>
                                 <input type="file" name="avatar_file">
                                 <br />

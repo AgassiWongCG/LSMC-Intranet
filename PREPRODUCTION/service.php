@@ -1,11 +1,11 @@
 
 <?php
     session_start();
-    require_once "config.php";
+    require_once "./config.php";
 
     // Info : Si la session existe pas soit si l'on est pas connecté on redirige
     if (!isset($_SESSION["user"])) {
-        header("Location: index.php");
+        header("Location: ./index.php");
         die();
     }
 
@@ -14,30 +14,35 @@
     $req->execute([$_SESSION["user"]]);
     $data = $req->fetch();
 
-    ($connect = mysqli_connect("localhost", "root", "")) or die("erreur de connection à MySQL");
-    mysqli_select_db($connect, "lsmc") or die("erreur de connexion à la base de données");
-    $idEffectifActuel = $data["id"];
-    $prenomEffectifActuel = $data["firstname"];
-    $nomEffectifActuel = $data["lastname"];
-    $hopitalEffectifActuel = $data["hospital"];
-    $gradeEffectifActuel = $data["grade"];
-    $roleEffectifActuel = $data["role"];
-    $agregationsEffectifActuel = $data["agregation"];
-    $telephoneEffectifActuel = $data["phone"];
+    // Info : Donnée de connexion au serveur phpmyadmin
+    $servername = "lsmcovptsg.mysql.db";   // URL mysql.db
+    $username   = "lsmcovptsg";            // database Username
+    $password   = "7hahHW582QbK7h";        // database Password
+    $dbname     = "lsmcovptsg";            // database Name
+
+    ($connect = mysqli_connect($servername, $username, $password)) or die("erreur de connection à MySQL");
+    mysqli_select_db($connect, $dbname) or die("erreur de connexion à la base de données");
+    $idEffectifActuel           = $data["id"];
+    $prenomEffectifActuel       = $data["firstname"];
+    $nomEffectifActuel          = $data["lastname"];
+    $hopitalEffectifActuel      = $data["hospital"];
+    $gradeEffectifActuel        = $data["grade"];
+    $roleEffectifActuel         = $data["role"];
+    $agregationsEffectifActuel  = $data["agregation"];
+    $telephoneEffectifActuel    = $data["phone"];
 
     // Info : Reformattage Textuel
-    $hopitalEffectifActuel = strtoupper($hopitalEffectifActuel);
-    $prenomEffectifActuel = ucfirst($prenomEffectifActuel);
-    $nomEffectifActuel = ucfirst($nomEffectifActuel);
-    $gradeEffectifActuel = ucfirst($gradeEffectifActuel);
+    $hopitalEffectifActuel      = strtoupper($hopitalEffectifActuel);
+    $prenomEffectifActuel       = ucfirst($prenomEffectifActuel);
+    $nomEffectifActuel          = ucfirst($nomEffectifActuel);
+    $gradeEffectifActuel        = ucfirst($gradeEffectifActuel);
+    $roleEffectifActuel         = ucfirst($roleEffectifActuel);
+    $telephoneEffectifActuel    = substr_replace($telephoneEffectifActuel, ' ', 3, 0);
+    $telephoneEffectifActuel    = substr_replace($telephoneEffectifActuel, ' ', 6, 0);
     if ($agregationsEffectifActuel === '') { $agregationsEffectifActuel = 'Aucune'; }
-    $roleEffectifActuel = ucfirst($roleEffectifActuel);
-    $telephoneEffectifActuel = substr_replace($telephoneEffectifActuel, ' ', 3, 0);
-    $telephoneEffectifActuel = substr_replace($telephoneEffectifActuel, ' ', 6, 0);
 
     //                                                       0      1          2              3        4      5       6      7         8       9
     $result                 = mysqli_query($connect, "SELECT id, effectif, debutservice, finservice, total, dernier, heure, minute, seconde, jour FROM service WHERE effectif=$idEffectifActuel");
-
     $result_total           = mysqli_query($connect, "SELECT SUM(seconde) AS seconde, SUM(minute) AS minute, SUM(heure) AS heure, SUM(jour) AS jour, dernier FROM service WHERE effectif=$idEffectifActuel AND dernier=0");
 
     while ($currentService = mysqli_fetch_row($result_total)) {
@@ -181,11 +186,12 @@
 	</head>
 	<body style="width: 100%; text-align: center;">
 	<?php
+
         // Info : Donnée de connexion au serveur PHPMyAdmin
-        $servername = "localhost";
-        $username   = "root";
-        $password   = "";
-        $dbname     = "lsmc";
+        $servername = "lsmcovptsg.mysql.db";   // URL mysql.db
+        $username   = "lsmcovptsg";            // database Username
+        $password   = "7hahHW582QbK7h";        // database Password
+        $dbname     = "lsmcovptsg";            // database Name
 
         // Info : Méthode dès que l'on appuie sur Prise de Service
         if (isset($_POST["button_PriseDeService"])) {
@@ -214,7 +220,7 @@
             $conn->close();
 
             // Info : Actualisation vers la même page pour ne pas duppliquer la requête de formulaire
-            header("Location: service.php");
+            header("Location: ./service.php");
         }
 
         // Info : Méthode dès que l'on appuie sur Mettre à Jour
@@ -242,7 +248,7 @@
             $conn->close();
 
             // Info : Actualisation vers la même page pour ne pas duppliquer la requête de formulaire
-            header("Location: service.php");
+            header("Location: ./service.php");
         }
 
         // Info : Méthode pour envoyer un effectif en Code 99
@@ -269,7 +275,7 @@
 //             }
 //
 //             // Info : Actualisation vers la même page pour ne pas duppliquer la requête de formulaire
-//             header("Location: service.php");
+//             header("Location: ./service.php");
 
             ///////////////////////
 
@@ -316,15 +322,10 @@
             $conn->close();
 
             // Info : Actualisation vers la même page pour ne pas duppliquer la requête de formulaire
-            header("Location: service.php");
+            header("Location: ./service.php");
         }
 
         if (isset($_POST["button_FinDeService"])) {
-
-            $servername = "localhost";
-            $username   = "root";
-            $password   = "";
-            $dbname     = "lsmc";
 
             $nouveauStatut      = "";
             $nouveauVehicule    = "";
@@ -363,11 +364,16 @@
             $conn->close();
 
             // Info : Actualisation vers la même page pour ne pas duppliquer la requête de formulaire
-            header("Location: service.php");
+            header("Location: ./service.php");
         }
 
-        ($connect = mysqli_connect("localhost", "root", "")) or die("erreur de connection à MySQL");
-        mysqli_select_db($connect, "lsmc") or die("erreur de connexion à la base de données");
+        $servername = "lsmcovptsg.mysql.db";   // URL mysql.db
+        $username   = "lsmcovptsg";            // database Username
+        $password   = "7hahHW582QbK7h";        // database Password
+        $dbname     = "lsmcovptsg";            // database Name
+
+        ($connect = mysqli_connect($servername, $username, $password)) or die("erreur de connection à MySQL");
+        mysqli_select_db($connect, $dbname) or die("erreur de connexion à la base de données");
         //                                                           0      1          2         3        4      5     6         7        8            9            10          11            12
         $result                     = mysqli_query($connect, "SELECT id, hospital, firstname, lastname, grade, role, agregation, phone, intervention, commentaire, vehicule, debutservice, service FROM effectif WHERE service = true");
         $nbrTotalService            = mysqli_num_rows($result);
@@ -395,11 +401,12 @@
     	<tbody>
     		<tr>
     			<td style="width: 33%;">
-    			    <a href="landing.php" class="btn btn-info btn-lg" style="margin: 0px 10px">Retour Profil</a>
-    			    <a href="historique.php" class="btn btn-info btn-lg" style="margin: 0px 10px">Mes Heures</a>
+    			    <a href="./landing.php" class="btn btn-info btn-lg" style="margin: 0px 10px">Retour Profil</a>
+    			    <a href="./historique.php" class="btn btn-info btn-lg" style="margin: 0px 10px">Mes Heures</a>
     			</td>
     			<td style="width: 34%; color: #aec3b0;">
     			    <h1>PRISE DE SERVICE</h1>
+    			    <!-- <h1>cService = <?php echo $data["service"];?> - cDeservice = <?php echo $data["deservice"];?></h1> -->
     			</td>
     			<td style="width: 33%;">
                     &nbsp;
@@ -462,7 +469,7 @@
                     </div>
                 </td>
     			<td style="width: 34%;">
-                    <form method="post" action="service.php" style="width: 100%; text-align: center;">
+                    <form method="post" action="./service.php" style="width: 100%; text-align: center;">
                         <table style="width: 100%; text-align: center;">
                             <tbody>
                                 <tr>
@@ -534,7 +541,7 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <?php if($data["service"] === 0) echo '
+                        <?php if($data["service"] === '0') echo '
                             <table style="width: 100%;">
                                 <tr>
                                     <td style="width: 100%; padding: 20px;">
@@ -543,7 +550,7 @@
                                 </tr>
                             </table>
                         '?>
-                        <?php if($data["service"] === 1) echo '
+                        <?php if($data["service"] === '1') echo '
                             <table style="width: 100%;">
                                 <tr>
                                     <td style="width: 50%; text-align: right; padding: 20px;">
@@ -577,11 +584,11 @@
                         </table>
                     </div>
 
-                    <?php if($data["deservice"] === 1) echo '
+                    <?php if($data["deservice"] === '1') echo '
                     <div style="margin: 50px; padding: 10px 10px 20px 10px; background-color: #ff8484; border-radius: 10px;">
     			        <h4 class="bold underline" style="padding: 10px; color: #c82333;">Gestion Rapide Direction</h4>
 
-                            <form method="post" action="service.php" style="width: 100%; text-align: center;">
+                            <form method="post" action="./service.php" style="width: 100%; text-align: center;">
                                 <table style="width: 100%; text-align: center;">
                                     <tbody>
                                         <tr>
@@ -604,13 +611,13 @@
 
                                                             // Info : Reformattage Textuel
                                                             $fullEffectifLine   = $effectifCode99firstname." ".$effectifCode99lastname." - ".$effectifCode99intervention;
-                                                            if($data["deservice"] === 1)
+                                                            if($data["deservice"] === '1')
                                                             {
                                                                 echo "<option value='$effectifCode99id'>$fullEffectifLine</option>";
                                                             }
                                                         }
                                                     ?>
-                                                <?php if($data["deservice"] === 1) echo '
+                                                <?php if($data["deservice"] === '1') echo '
                                                 </select>
                                             </td>
                                         </tr>

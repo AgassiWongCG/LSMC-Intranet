@@ -33,7 +33,7 @@
             <?php break;}
          } ?>
 
-        <form action="connexion.php" method="post">
+        <form action="./connexion.php" method="post">
             <h2 class="text-center">Connexion</h2>
             <div class="form-group">
                 <input type="text" name="pseudo" class="form-control" placeholder="Pseudo" required="required"
@@ -48,7 +48,7 @@
             </div>
         </form>
 
-        <p class="text-center"><a href="inscription.php">Inscription</a></p>
+        <p class="text-center"><a href="./inscription.php">Inscription</a></p>
     </div>
     <style>
     .login-form {
