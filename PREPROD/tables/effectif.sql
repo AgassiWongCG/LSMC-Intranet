@@ -38,7 +38,7 @@ CREATE TABLE `effectif` (
   `lastname` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
   `hospital` varchar(255) NOT NULL,
-  `grade` varchar(255) NOT NULL DEFAULT 'Étudiant',
+  `grade` varchar(255) NOT NULL DEFAULT '''Étudiant''',
   `role` varchar(255) NOT NULL,
   `agregation` varchar(255) NOT NULL,
   `phone` varchar(255) NOT NULL,
