@@ -154,14 +154,14 @@
                     $total_heure = $total_heure + $heure_supp;
                 }
 
-                $jour_supp = 0;
-                if ($total_heure > 23) {
-                    $jour_supp = intval($total_heure / 24);
-                    $total_heure = $total_heure % 24;
-                    $total_jour = $total_jour + $jour_supp;
-                }
+//                $jour_supp = 0;
+//                if ($total_heure > 23) {
+//                    $jour_supp = intval($total_heure / 24);
+//                    $total_heure = $total_heure % 24;
+//                    $total_jour = $total_jour + $jour_supp;
+//                }
 
-                echo "<span>$total_jour jour(s)</span><br/>";
+//                echo "<span>$total_jour jour(s)</span><br/>";
                 echo "<span>$total_heure heure(s)</span><br/>";
                 echo "<span>$total_minute minute(s)</span><br/>";
                 echo "<span>$total_seconde seconde(s)</span><br/>";
@@ -173,7 +173,6 @@
                             <th>Id</th>
                             <th>Début Service</th>
                             <th>Fin Service</th>
-                            <th>Jour(s)</th>
                             <th>Heure(s)</th>
                             <th>Minute(s)</th>
                             <th>Seconde(s)</th>
@@ -203,7 +202,6 @@
                     <td>$id</td>
                     <td>$debutservice</td>
                     <td>$finservice</td>
-                    <td>$jour</td>
                     <td>$heure</td>
                     <td>$minute</td>
                     <td>$seconde</td>

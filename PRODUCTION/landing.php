@@ -49,8 +49,9 @@
                         <a href="./deconnexion.php" class="btn btn-danger btn-lg">Déconnexion</a>
                         <a href="./service.php" class="btn btn-danger btn-lg">Prise de Service</a>
                         <a href="./historique.php" class="btn btn-danger btn-lg">Historique</a>
+                        <?php if($data["register"] === '1') echo '<a href="./inscription.php" class="btn btn-danger btn-lg">Création de compte</a>'?>
                         <!-- Button trigger modal -->
-                        <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#change_password">
+                        <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#changepassword">
                           Changer mon mot de passe
                         </button>
                 </div>
@@ -63,7 +64,7 @@
 
                                 
         <!-- Modal -->
-        <div class="modal fade" id="change_password" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+        <div class="modal fade" id="changepassword" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -73,7 +74,7 @@
                             </button>
                          </div>
                             <div class="modal-body">
-                                <form action="./change_password.php" method="POST">
+                                <form action="./changepassword.php" method="POST">
                                     <label for='current_password'>Mot de passe actuel</label>
                                     <input type="password" id="current_password" name="current_password" class="form-control" required/>
                                     <br />

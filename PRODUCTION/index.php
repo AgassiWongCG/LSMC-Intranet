@@ -48,7 +48,7 @@
             </div>
         </form>
 
-        <p class="text-center"><a href="./inscription.php">Inscription</a></p>
+        <!-- <p class="text-center"><a href="./inscription.php">Inscription</a></p> -->
     </div>
     <style>
     .login-form {

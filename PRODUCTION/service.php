@@ -1,4 +1,3 @@
-
 <?php
     session_start();
     require_once "./config.php";
@@ -578,7 +577,7 @@
                                 <tr>
                                     <td><?php echo $nbrTotalService_LSMC ?></td>
                                     <td><?php echo $nbrTotalService_LSMC_Code3 ?></td>
-                                    <td><?php echo $nbrTotalService_BCMC_Code6 ?></td>
+                                    <td><?php echo $nbrTotalService_LSMC_Code6 ?></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -611,7 +610,7 @@
 
                                                             // Info : Reformattage Textuel
                                                             $fullEffectifLine   = $effectifCode99firstname." ".$effectifCode99lastname." - ".$effectifCode99intervention;
-                                                            if($data["deservice"] === '1')
+                                                            if($data["deservice"] === '1' && $data["id"] <> $effectifCode99id)
                                                             {
                                                                 echo "<option value='$effectifCode99id'>$fullEffectifLine</option>";
                                                             }
@@ -623,7 +622,7 @@
                                         </tr>
                                     </tbody>
                                 </table>
-                                <input type="submit" onmousover="errorCheck_Code99()" name="button_Code99" value="Envoyer en Code 99" class="btn btn-secondary btn-lg"/>
+                                <input type="submit" onmousover="errorCheck_Code99()" name="button_Code99" value="Fin de service forcée" class="btn btn-secondary btn-lg"/>
                             </form>'?>
 
                     </div>
