@@ -13,11 +13,6 @@
     $req->execute([$_SESSION["user"]]);
     $data = $req->fetch();
 
-    if (!$data["register"] === 1) {
-        header("Location: ./index.php");
-        die();
-    }
-
     // Info : Donnée de connexion au serveur phpmyadmin
     $servername = "lsmcovptsg.mysql.db";   // URL mysql.db
     $username   = "lsmcovptsg";            // database Username
@@ -26,6 +21,12 @@
 
     ($connect = mysqli_connect($servername, $username, $password)) or die("erreur de connection à MySQL");
     mysqli_select_db($connect, $dbname) or die("erreur de connexion à la base de données");
+
+    $hasRightToRegister = $data["register"];
+    if ($hasRightToRegister <> '1') {
+        header("Location: ./deconnexion.php");
+        die();
+    }
 
 ?>
 <!DOCTYPE html>
@@ -105,6 +106,24 @@
             }
 		</style>
         <script language="javascript" type="text/javascript">
+            window.addEventListener("load", function() {
+                const queryString = window.location.search;
+                const urlParams = new URLSearchParams(queryString);
+                const displayStatus = urlParams.get('status');
+                const displayUsername = urlParams.get('username');
+                const displayPassword = urlParams.get('password');
+                console.log(displayUsername);
+                console.log(displayPassword); // idSuccessTable
+
+                if (displayStatus == "success") {
+                    document.getElementById("idSuccessTable").style.display = "block";
+                    document.getElementById("idSuccessUsername").innerHTML = "Nom d'utilisateur : " + displayUsername;
+                    document.getElementById("idSuccessPassword").innerHTML = "Mot de passe : " + displayPassword;
+                }
+                else {
+                    document.getElementById("idSuccessTable").style.display = "none";
+                }
+            });
 
 		</script>
 	</head>
@@ -126,7 +145,7 @@
             $newEMS_phone = $_POST['phone'];
             $newEMS_bank = $_POST['bank'];
             $newEMS_discord = $_POST['discord'];
-            
+
             $newEMS_uid = $_POST['uid'];
             $newEMS_sexe = $_POST['sexe'];
 //            $newEMS_dateentreehopital = new Date('NOW');
@@ -135,6 +154,7 @@
 
             // On hash le mot de passe avec Bcrypt, via un coût de 12
             $cost = ["cost" => 12];
+            $savePassword = $newEMS_password;
             $newEMS_password = password_hash(
                 $newEMS_password,
                 PASSWORD_BCRYPT,
@@ -145,11 +165,38 @@
             $newEMS_ip = $_SERVER["REMOTE_ADDR"];
 
             $newEMS_grade = $_POST['grade'];
-            $newEMS_agregation = $_POST['agregation'];
-            $newEMS_role = $_POST['role'];
+            $tmpEMS_agregation = $_POST['agregation'];
+            $tmpEMS_role = $_POST['role'];
+            $newEMS_agregation = "";
+            $newEMS_role = "";
 
             $newEMS_deservice = $_POST['deservice'];
             $newEMS_register = $_POST['register'];
+            ////
+            $newEMS_rank = 0;
+            if ($newEMS_grade === "Étudiant")           { $newEMS_rank = 1; }
+            else if ($newEMS_grade === "Aide-Soignant") { $newEMS_rank = 2; }
+            else if ($newEMS_grade === "Ambulancier")   { $newEMS_rank = 3; }
+            else if ($newEMS_grade === "Infirmier")     { $newEMS_rank = 4; }
+
+            else if ($newEMS_grade === "Externe")       { $newEMS_rank = 11; }
+            else if ($newEMS_grade === "Interne")       { $newEMS_rank = 12; }
+            else if ($newEMS_grade === "Résident")      { $newEMS_rank = 13; }
+
+            else if ($newEMS_grade === "Généraliste")               { $newEMS_rank = 20; }
+            else if ($newEMS_grade === "Urgentiste")                { $newEMS_rank = 21; }
+            else if ($newEMS_grade === "Médecin-Chef")              { $newEMS_rank = 22; }
+
+            else if ($newEMS_grade === "Chirurgien")                { $newEMS_rank = 23; }
+            else if ($newEMS_grade === "Chirurgien Spécialisé")     { $newEMS_rank = 24; }
+
+            else if ($newEMS_grade === "Chef de Service")       { $newEMS_rank = 31; }
+            else if ($newEMS_grade === "Directeur de Centre")   { $newEMS_rank = 32; }
+            else if ($newEMS_grade === "Directeur-Adjoint")     { $newEMS_rank = 33; }
+            else if ($newEMS_grade === "Directeur")             { $newEMS_rank = 34; }
+
+            $newEMS_timemanager = $_POST['timemanager'];
+            $newEMS_viewall = $_POST['viewall'];
 
             // Info : Création de la connexion + Vérification de la connexion
             $conn = new mysqli($servername, $username, $password, $dbname);
@@ -157,26 +204,148 @@
               die("Connection failed: " . $conn->connect_error);
             }
 
-            echo "EMS_firstname: " . $newEMS_firstname . "<br/>";
-            echo "EMS_lastname: " . $newEMS_lastname . "<br/>";
-            echo "EMS_phone: " . $newEMS_phone . "<br/>";
-            echo "EMS_bank: " . $newEMS_bank . "<br/>";
-            echo "EMS_discord: " . $newEMS_discord . "<br/>";
-            echo "EMS_uid: " . $newEMS_uid . "<br/>";
-            echo "EMS_sexe: " . $newEMS_sexe . "<br/>";
-            echo "EMS_pseudo: " . $newEMS_pseudo . "<br/>";
-            echo "EMS_password: " . $newEMS_password . "<br/>";
-            echo "EMS_grade: " . $newEMS_grade . "<br/>";
-            echo "EMS_agregation: " . $newEMS_agregation . "<br/>";
-            echo "EMS_role: " . $newEMS_role . "<br/>";
-            echo "EMS_deservice: " . $newEMS_deservice . "<br/>";
-            echo "EMS_register: " . $newEMS_register . "<br/>";
+            foreach ($tmpEMS_agregation as $value1) {
+              $newEMS_agregation = $newEMS_agregation . "$value1, ";
+            }
+            $newEMS_agregation = rtrim($newEMS_agregation,', ');
 
-            $sql   = "INSERT INTO `effectif` (`id`, `firstname`, `lastname`, `phone`, `bank`, `discord`, `uid`, `sexe`, `pseudo`, `password`, `grade`) VALUES (NULL, $newEMS_firstname, $newEMS_lastname, $newEMS_phone, $newEMS_bank, $newEMS_discord, $newEMS_uid, $newEMS_sexe, $newEMS_pseudo, $newEMS_password, $newEMS_grade)";
+            foreach ($tmpEMS_role as $value2) {
+              $newEMS_role = $newEMS_role . "$value2, ";
+            }
+            $newEMS_role = rtrim($newEMS_role,', ');
+
+            if ($data["undeletable"] === '1') {
+                $insert = $bdd->prepare(
+                    "INSERT INTO effectif(firstname, lastname, phone, bank, discord, uid, sexe, pseudo, password, grade, agregation, role, ip, token, deservice, register, timemanager, viewall, rank) VALUES(:firstname, :lastname, :phone, :bank, :discord, :uid, :sexe, :pseudo, :password, :grade, :agregation, :role, :ip, :token, :deservice, :register, :timemanager, :viewall, :rank)"
+                );
+                $insert->execute([
+                    "firstname" => $newEMS_firstname,
+                    "lastname" => $newEMS_lastname,
+                    "phone" => $newEMS_phone,
+                    "bank" => $newEMS_bank,
+                    "discord" => $newEMS_discord,
+                    "uid" => $newEMS_uid,
+                    "sexe" => $newEMS_sexe,
+                    "pseudo" => $newEMS_pseudo,
+                    "password" => $newEMS_password,
+                    "grade" => $newEMS_grade,
+                    "agregation" => $newEMS_agregation,
+                    "role" => $newEMS_role,
+                    "ip"    => $newEMS_ip,
+                    "token" => bin2hex(openssl_random_pseudo_bytes(64)),
+                    "deservice"    => $newEMS_deservice,
+                    "register"    => $newEMS_register,
+                    "timemanager"    => $newEMS_timemanager,
+                    "viewall"    => $newEMS_viewall,
+                    "rank"    => $newEMS_rank,
+                ]);
+            }
+            else if ($data["undeletable"] === '0') {
+                $insert = $bdd->prepare(
+                    "INSERT INTO effectif(firstname, lastname, phone, bank, discord, uid, sexe, pseudo, password, grade, agregation, role, ip, token, rank) VALUES(:firstname, :lastname, :phone, :bank, :discord, :uid, :sexe, :pseudo, :password, :grade, :agregation, :role, :ip, :token, :rank)"
+                );
+                $insert->execute([
+                    "firstname" => $newEMS_firstname,
+                    "lastname" => $newEMS_lastname,
+                    "phone" => $newEMS_phone,
+                    "bank" => $newEMS_bank,
+                    "discord" => $newEMS_discord,
+                    "uid" => $newEMS_uid,
+                    "sexe" => $newEMS_sexe,
+                    "pseudo" => $newEMS_pseudo,
+                    "password" => $newEMS_password,
+                    "grade" => $newEMS_grade,
+                    "agregation" => $newEMS_agregation,
+                    "role" => $newEMS_role,
+                    "ip"    => $newEMS_ip,
+                    "token" => bin2hex(openssl_random_pseudo_bytes(64)),
+                    "rank"    => $newEMS_rank,
+                ]);
+            }
+
+            // Info : Actualisation vers la même page pour ne pas duppliquer la requête de formulaire
+            header("Location: ./landing.php?status=success&username=" . $newEMS_pseudo . "&password=" . $savePassword);
+
+        }
+
+        if (isset($_POST["button_Recreate"])) {
+
+            // Info : Récupération des paramètres du formulaire
+            $newEMS_firstname = strtolower($_POST['firstname']);
+            $newEMS_lastname = strtolower($_POST['lastname']);
+            $newEMS_phone = $_POST['phone'];
+            $newEMS_bank = $_POST['bank'];
+            $newEMS_discord = $_POST['discord'];
+
+            $newEMS_uid = $_POST['uid'];
+            $newEMS_sexe = $_POST['sexe'];
+//            $newEMS_dateentreehopital = new Date('NOW');
+            $newEMS_pseudo = htmlspecialchars($newEMS_firstname . $newEMS_lastname);
+            $newEMS_password = htmlspecialchars($newEMS_uid . $newEMS_bank);
+
+            // On hash le mot de passe avec Bcrypt, via un coût de 12
+            $cost = ["cost" => 12];
+            $savePassword = $newEMS_password;
+            $newEMS_password = password_hash(
+                $newEMS_password,
+                PASSWORD_BCRYPT,
+                $cost
+            );
+
+            // On stock l'adresse IP
+            $newEMS_ip = $_SERVER["REMOTE_ADDR"];
+
+            $newEMS_grade = $_POST['grade'];
+            $tmpEMS_agregation = $_POST['agregation'];
+            $tmpEMS_role = $_POST['role'];
+            $newEMS_agregation = "";
+            $newEMS_role = "";
+
+            $newEMS_deservice = $_POST['deservice'];
+            $newEMS_register = $_POST['register'];
+            /////
+            $newEMS_rank = 0;
+            if ($newEMS_grade === "Étudiant")           { $newEMS_rank = 1; }
+            else if ($newEMS_grade === "Aide-Soignant") { $newEMS_rank = 2; }
+            else if ($newEMS_grade === "Ambulancier")   { $newEMS_rank = 3; }
+            else if ($newEMS_grade === "Infirmier")     { $newEMS_rank = 4; }
+
+            else if ($newEMS_grade === "Externe")       { $newEMS_rank = 11; }
+            else if ($newEMS_grade === "Interne")       { $newEMS_rank = 12; }
+            else if ($newEMS_grade === "Résident")      { $newEMS_rank = 13; }
+            else if ($newEMS_grade === "Généraliste")   { $newEMS_rank = 14; }
+
+            else if ($newEMS_grade === "Urgentiste")                { $newEMS_rank = 21; }
+            else if ($newEMS_grade === "Médecin-Chef")              { $newEMS_rank = 22; }
+            else if ($newEMS_grade === "Chirurgien")                { $newEMS_rank = 23; }
+            else if ($newEMS_grade === "Chirurgien Spécialisé")     { $newEMS_rank = 24; }
+
+            else if ($newEMS_grade === "Chef de Service")       { $newEMS_rank = 31; }
+            else if ($newEMS_grade === "Directeur de Centre")   { $newEMS_rank = 32; }
+            else if ($newEMS_grade === "Directeur-Adjoint")     { $newEMS_rank = 33; }
+            else if ($newEMS_grade === "Directeur")             { $newEMS_rank = 34; }
+
+            $newEMS_timemanager = $_POST['timemanager'];
+            $newEMS_viewall = $_POST['viewall'];
+
+            // Info : Création de la connexion + Vérification de la connexion
+            $conn = new mysqli($servername, $username, $password, $dbname);
+            if ($conn->connect_error) {
+              die("Connection failed: " . $conn->connect_error);
+            }
+
+            foreach ($tmpEMS_agregation as $value1) {
+              $newEMS_agregation = $newEMS_agregation . "$value1, ";
+            }
+            $newEMS_agregation = rtrim($newEMS_agregation,', ');
+
+            foreach ($tmpEMS_role as $value2) {
+              $newEMS_role = $newEMS_role . "$value2, ";
+            }
+            $newEMS_role = rtrim($newEMS_role,', ');
 
             $insert = $bdd->prepare(
-//                "INSERT INTO effectif(firstname, lastname, phone, bank, discord, uid, sexe, pseudo, password, grade) VALUES(:firstname, :lastname, :phone, :bank, :discord, :uid, :sexe, :pseudo, :password, :grade)"
-                "INSERT INTO effectif(firstname, lastname, phone, bank, discord, uid, sexe, pseudo, password, grade, agregation, role, ip, token, deservice, register) VALUES(:firstname, :lastname, :phone, :bank, :discord, :uid, :sexe, :pseudo, :password, :grade, :agregation, :role, :ip, :token, :deservice, :register)"
+                "INSERT INTO effectif(firstname, lastname, phone, bank, discord, uid, sexe, pseudo, password, grade, agregation, role, ip, token, deservice, register, timemanager, viewall, rank) VALUES(:firstname, :lastname, :phone, :bank, :discord, :uid, :sexe, :pseudo, :password, :grade, :agregation, :role, :ip, :token, :deservice, :register, :timemanager, :viewall, :rank)"
             );
             $insert->execute([
                 "firstname" => $newEMS_firstname,
@@ -195,23 +364,13 @@
                 "token" => bin2hex(openssl_random_pseudo_bytes(64)),
                 "deservice"    => $newEMS_deservice,
                 "register"    => $newEMS_register,
+                "timemanager"    => $newEMS_timemanager,
+                "viewall"    => $newEMS_viewall,
+                "rank"    => $newEMS_rank,
             ]);
 
-//            if ($conn->query($sql) === TRUE) {
-//                echo "Record inserted successfully";
-//                header("Location: ./landing.php");
-//                die();
-//            } else {
-//                echo "Error inserting record: " . $conn->error;
-//            }
-//            $conn->close();
-
             // Info : Actualisation vers la même page pour ne pas duppliquer la requête de formulaire
-
-        }
-
-        if (isset($_POST["button_Recreate"])) {
-
+            header("Location: ./inscription.php?status=success&username=" . $newEMS_pseudo . "&password=" . $savePassword);
         }
 
     ?>
@@ -230,6 +389,42 @@
     		</tr>
     	</tbody>
     </table>
+
+    <div id="idSuccessTable">
+        <table style="width: 100%; color: #01161e;">
+            <tbody>
+                <tr>
+                    <td style="width: 20%;">&nbsp;</td>
+                    <td style="width: 60%;">
+
+                        <div style="margin: 50px; padding: 10px 10px 20px 10px; background-color: #A4F9C8; border-radius: 10px;">
+
+                            <h4 class="bold underline" style="padding: 10px; color: #01161e;">Création du compte avec succès</h4>
+
+                            <table style="width: 100%; text-align: center;">
+                                <tbody>
+                                    <tr>
+                                        <td style="width: 100%;" id="">Site : https://www.lsmc.ovh/</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 100%;" id="idSuccessUsername"></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 100%;" id="idSuccessPassword"></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 100%;">Pense à changer ton mot de passe</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </td>
+                    <td style="width: 20%;">&nbsp;</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
     <table style="width: 100%;">
         <tbody>
@@ -269,15 +464,15 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td class="normalTitleStyle">ID Radio D</td>
                                         <td class="normalTitleStyle">UID Ville</td>
+                                        <td class="normalTitleStyle">ID Radio D</td>
                                     </tr>
                                     <tr>
                                         <td>
-                                            <input type="text" name="discord" class="textInputStyle" placeholder="Discord ID" required="required" autocomplete="off">
+                                            <input type="number" name="uid" class="textInputStyle" placeholder="UID Ville" required="required" autocomplete="off">
                                         </td>
                                         <td>
-                                            <input type="number" name="uid" class="textInputStyle" placeholder="UID Ville" required="required" autocomplete="off">
+                                            <input type="text" name="discord" class="textInputStyle" placeholder="Discord ID" required="required" autocomplete="off">
                                         </td>
                                     </tr>
                                     <tr>
@@ -335,7 +530,7 @@
                                     </tr>
                                     <tr>
                                         <td>
-                                            <select name="agregation" class="selectMultipleInputStyle" required="required" size="9" multiple>
+                                            <select name="agregation[]" class="selectMultipleInputStyle" size="9" multiple="multiple">
                                                 <option value='MRG'>M.R.G.</option>
                                                 <option value='MARU'>M.A.R.U.</option>
                                                 <option value='MTT'>M.T.T.</option>
@@ -348,7 +543,7 @@
                                             </select>
                                         </td>
                                         <td style="vertical-align: top;">
-                                            <select name="role" class="selectMultipleInputStyle" required="required" multiple>
+                                            <select name="role[]" class="selectMultipleInputStyle" multiple="multiple">
                                                 <option value='Instructeur Médical'>Instructeur Médical</option>
                                                 <option value='Formateur Médical'>Formateur Médical</option>
                                                 <option value='Apprenti Formateur'>Apprenti Formateur</option>
@@ -359,42 +554,62 @@
                                 </tbody>
                             </table>
 
-                            <h4 class="bold underline" style="padding: 10px; color: #01161e;">Privilège du Personnel</h4>
+                            <?php if($data["undeletable"] === '1') echo '
+                                <h4 class="bold underline" style="padding: 10px; color: #01161e;">Privilège du Personnel</h4>
 
-                            <table style="width: 100%;">
-                                <tbody>
-                                    <tr>
-                                        <td class="normalTitleStyle" style="width: 50%;">Droit - Fin de Service Forcée</td>
-                                        <td class="normalTitleStyle" style="width: 50%;">Droit - Création de Compte</td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <select name="deservice" class="selectInputStyle" required="required">
-                                                <option value="0" selected>Non</option>
-                                                <option value="1">Oui</option>
-                                            </select>
-                                        </td>
-                                        <td>
-                                            <select name="register" class="selectInputStyle" required="required">
-                                                <option value="0" selected>Non</option>
-                                                <option value="1">Oui</option>
-                                            </select>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                                <table style="width: 100%;">
+                                    <tbody>
+                                        <tr>
+                                            <td class="normalTitleStyle" style="width: 50%;">Droit - Fin de Service Forcée</td>
+                                            <td class="normalTitleStyle" style="width: 50%;">Droit - Création et Modification d&#8217;effectif</td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <select name="deservice" class="selectInputStyle" required="required">
+                                                    <option value="0" selected>Non</option>
+                                                    <option value="1">Oui</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select name="register" class="selectInputStyle" required="required">
+                                                    <option value="0" selected>Non</option>
+                                                    <option value="1">Oui</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="normalTitleStyle" style="width: 50%;">Droit - Gestion des heures</td>
+                                            <td class="normalTitleStyle" style="width: 50%;">Droit - Vision des heures des effectifs</td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <select name="timemanager" class="selectInputStyle" required="required">
+                                                    <option value="0" selected>Non</option>
+                                                    <option value="1">Oui</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select name="viewall" class="selectInputStyle" required="required">
+                                                    <option value="0" selected>Non</option>
+                                                    <option value="1">Oui</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            '?>
 
                             <table style="width: 100%;">
                                 <tbody>
                                     <tr>
                                         <td style="width: 33%;">
                                             <input type="submit" onmousover="" name="button_Create" value="Créer le compte" class="btn btn-success btn-lg" style="width: 300px;"/>
-                                            </td>
+                                        </td>
                                         <td style="width: 34%;">
-                                            <button type="submit" class="btn btn-primary btn-lg" style="width: 300px;">Sauvegarder et recréer</button>
+                                            <input type="submit" onmousover="" name="button_Recreate" value="Sauvegarder et Recréer" class="btn btn-warning btn-lg" style="width: 300px;"/>
                                         </td>
                                         <td style="width: 33%;">
-                                            <a href="./landing.php" class="btn btn-info btn-lg" style="width: 300px;">Annuler</a>
+                                            <a href="./landing.php" class="btn btn-danger btn-lg" style="width: 300px;">Annuler</a>
                                         </td>
                                     </tr>
                                 </tbody>

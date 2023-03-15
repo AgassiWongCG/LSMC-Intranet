@@ -15,15 +15,40 @@
 ?>
 <!doctype html>
 <html lang="en">
-  <head>
-    <title>Espace membre</title>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <head>
+        <title>Espace membre</title>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="./css/style.css">
-  </head>
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="./css/style.css">
+        <style>
+            body {
+                color: #ffffff;
+                background-color: #01161e;
+            }
+        </style>
+        <script language="javascript" type="text/javascript">
+
+            window.addEventListener("load", function() {
+                const queryString = window.location.search;
+                const urlParams = new URLSearchParams(queryString);
+                const displayStatus = urlParams.get('status');
+                const displayUsername = urlParams.get('username');
+                const displayPassword = urlParams.get('password');
+                console.log(displayUsername);
+                console.log(displayPassword); // idSuccessTable
+
+                if (displayStatus == "success") {
+                    var copyText = 'Création du compte terminé\n\nSite : https://www.lsmc.ovh/\nID : ' + displayUsername + '\nMot de passe : ' + displayPassword + '\n\nPense à changer ton mot de passe.';
+                    navigator.clipboard.writeText(copyText);
+                    alert('Création du compte terminé\n\nSite : https://www.lsmc.ovh/\nID : ' + displayUsername + '\nMot de passe : ' + displayPassword + '\n\nLe contenu a automatiquement été copié dans votre presse-papier.');
+                }
+            });
+
+        </script>
+    </head>
   <body>
         <div class="container">
             <div class="col-md-12">
@@ -68,20 +93,20 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Changer mon mot de passe</h5>
+                        <h5 class="modal-title" style="color: black;">Changer mon mot de passe</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                          </div>
                             <div class="modal-body">
                                 <form action="./changepassword.php" method="POST">
-                                    <label for='current_password'>Mot de passe actuel</label>
+                                    <label for='current_password' style="color: black;">Mot de passe actuel</label>
                                     <input type="password" id="current_password" name="current_password" class="form-control" required/>
                                     <br />
-                                    <label for='new_password'>Nouveau mot de passe</label>
+                                    <label for='new_password' style="color: black;">Nouveau mot de passe</label>
                                     <input type="password" id="new_password" name="new_password" class="form-control" required/>
                                     <br />
-                                    <label for='new_password_retype'>Re tapez le nouveau mot de passe</label>
+                                    <label for='new_password_retype' style="color: black;">Re tapez le nouveau mot de passe</label>
                                     <input type="password" id="new_password_retype" name="new_password_retype" class="form-control" required/>
                                     <br />
                                     <button type="submit" class="btn btn-success">Sauvegarder</button>

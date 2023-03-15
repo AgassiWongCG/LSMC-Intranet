@@ -12,6 +12,12 @@
     $req = $bdd->prepare("SELECT * FROM effectif WHERE token = ?");
     $req->execute([$_SESSION["user"]]);
     $data = $req->fetch();
+
+    $hasRightToViewAll = $data["viewall"];
+    if ($hasRightToViewAll <> '1') {
+        header("Location: ./service.php");
+        die();
+    }
 ?>
 <!DOCTYPE html>
 <html>
@@ -130,9 +136,9 @@
         $idEffectifActuel = $data["id"];
 
         //                                                       0      1          2              3        4      5       6      7         8       9
-        $result                 = mysqli_query($connect, "SELECT id, effectif, debutservice, finservice, total, dernier, heure, minute, seconde, jour, firstname, lastname, status FROM service WHERE effectif=$idEffectifActuel AND past=0");
+        $result                 = mysqli_query($connect, "SELECT id, effectif, debutservice, finservice, total, dernier, heure, minute, seconde, jour, firstname, lastname, status FROM service WHERE past=0 AND dernier = 0");
 
-        $result_total           = mysqli_query($connect, "SELECT SUM(seconde) AS seconde, SUM(minute) AS minute, SUM(heure) AS heure, SUM(jour) AS jour, dernier FROM service WHERE effectif=$idEffectifActuel AND dernier=0 AND past=0");
+        $result_total           = mysqli_query($connect, "SELECT SUM(seconde) AS seconde, SUM(minute) AS minute, SUM(heure) AS heure, SUM(jour) AS jour, dernier FROM service WHERE dernier=0 AND past=0");
 
         while ($row = mysqli_fetch_row($result_total)) {
             $total_jour     = $row[3];
@@ -164,7 +170,7 @@
                         <a href="./service.php" class="btn btn-info btn-lg" style="margin: 0px 10px">Retour Prise de Service</a>
                     </td>
                     <td style="width: 34%; color: #aec3b0;">
-                        <h1>MES PRISES DE SERVICE</h1>
+                        <h1>TOUTES LES PRISES DE SERVICE</h1>
                         <!-- <h1>cService = <?php echo $data["service"];?> - cDeservice = <?php echo $data["deservice"];?></h1> -->
                     </td>
                     <td style="width: 33%;">
@@ -202,9 +208,10 @@
                 $minute             = $row[7];
                 $seconde            = $row[8];
                 $jour               = $row[9];
-                $firstname          = ucfirst($row[10]);
-                $lastname           = ucfirst($row[11]);
+                $prenom             = ucfirst($row[10]);
+                $nom                = ucfirst($row[11]);
                 $status             = $row[12];
+
 
                 if ($finservice === '' || $finservice === null) {
                     $finservice = "Non terminé";
@@ -218,7 +225,7 @@
 
             echo "<tr>
                     <td>$id</td>
-                    <td>$firstname $lastname</td>
+                    <td>$prenom $nom</td>
                     <td>$status</td>
                     <td>$debutservice</td>
                     <td>$finservice</td>
