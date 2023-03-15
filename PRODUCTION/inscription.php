@@ -32,7 +32,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Prise de Service</title>
+		<title>LSMC - Inscription EMS</title>
 		<link rel="stylesheet" href="./css/style.css">
 		<link rel="stylesheet" href="./css/tools.css">
 		<style>
@@ -66,6 +66,15 @@
  		    }
             .textInputStyle {
                 width: 300px;
+                height: 40px;
+                text-align: center;
+                font-weight: bold;
+                border-radius: 10px;
+                margin-bottom: 20px;
+                border: solid 2px black;
+            }
+            .textInputStyleLarge {
+                width: 80%;
                 height: 40px;
                 text-align: center;
                 font-weight: bold;
@@ -296,10 +305,8 @@
             $newEMS_ip = $_SERVER["REMOTE_ADDR"];
 
             $newEMS_grade = $_POST['grade'];
-            $tmpEMS_agregation = $_POST['agregation'];
-            $tmpEMS_role = $_POST['role'];
-            $newEMS_agregation = "";
-            $newEMS_role = "";
+            $newEMS_agregation = $_POST['agregation'];
+            $newEMS_role = $_POST['role'];
 
             $newEMS_deservice = $_POST['deservice'];
             $newEMS_register = $_POST['register'];
@@ -334,15 +341,15 @@
               die("Connection failed: " . $conn->connect_error);
             }
 
-            foreach ($tmpEMS_agregation as $value1) {
-              $newEMS_agregation = $newEMS_agregation . "$value1, ";
-            }
-            $newEMS_agregation = rtrim($newEMS_agregation,', ');
+            // foreach ($tmpEMS_agregation as $value1) {
+            //   $newEMS_agregation = $newEMS_agregation . "$value1, ";
+            // }
+            // $newEMS_agregation = rtrim($newEMS_agregation,', ');
 
-            foreach ($tmpEMS_role as $value2) {
-              $newEMS_role = $newEMS_role . "$value2, ";
-            }
-            $newEMS_role = rtrim($newEMS_role,', ');
+            // foreach ($tmpEMS_role as $value2) {
+            //   $newEMS_role = $newEMS_role . "$value2, ";
+            // }
+            // $newEMS_role = rtrim($newEMS_role,', ');
 
             $insert = $bdd->prepare(
                 "INSERT INTO effectif(firstname, lastname, phone, bank, discord, uid, sexe, pseudo, password, grade, agregation, role, ip, token, deservice, register, timemanager, viewall, rank) VALUES(:firstname, :lastname, :phone, :bank, :discord, :uid, :sexe, :pseudo, :password, :grade, :agregation, :role, :ip, :token, :deservice, :register, :timemanager, :viewall, :rank)"
@@ -499,7 +506,6 @@
                                 <tbody>
                                     <tr>
                                         <td class="normalTitleStyle">Grade</td>
-                                        <td class="normalTitleStyle">&nbsp;</td>
                                     </tr>
                                     <tr>
                                         <td>
@@ -526,29 +532,20 @@
                                     </tr>
                                     <tr>
                                         <td class="normalTitleStyle">Agrégation(s)</td>
-                                        <td class="normalTitleStyle">Rôle(s)</td>
                                     </tr>
                                     <tr>
                                         <td>
-                                            <select name="agregation[]" class="selectMultipleInputStyle" size="9" multiple="multiple">
-                                                <option value='MRG'>M.R.G.</option>
-                                                <option value='MARU'>M.A.R.U.</option>
-                                                <option value='MTT'>M.T.T.</option>
-                                                <option value='ASG'>A.S.G.</option>
-                                                <option value='Tech ASG'>Tech A.S.G.</option>
-                                                <option value='PSS'>P.S.S.</option>
-                                                <option value='GOS'>G.O.S.</option>
-                                                <option value='EMT'>E.M.T.</option>
-                                                <option value='GSS'>G.S.S.</option>
-                                            </select>
-                                        </td>
+                                            <span style="color: black; margin-bottom: 10px;">Agréations possibles : MRG, MARU, MTT, ASG, Tech ASG, PSS, GOS, EMT, GSS, MDT</span><br/><br/>
+                                            <input type="text" name="agregation" class="textInputStyleLarge" placeholder="Agrégation(s)" value="<?php echo $effectifToModify['agregation']?>" autocomplete="off">
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="normalTitleStyle">Rôle(s)</td>
+                                    </tr>
+                                    <tr>
                                         <td style="vertical-align: top;">
-                                            <select name="role[]" class="selectMultipleInputStyle" multiple="multiple">
-                                                <option value='Instructeur Médical'>Instructeur Médical</option>
-                                                <option value='Formateur Médical'>Formateur Médical</option>
-                                                <option value='Apprenti Formateur'>Apprenti Formateur</option>
-                                                <option value='Mentor'>Mentor</option>
-                                            </select>
+                                            <span style="color: black; margin-bottom: 10px;">Rôles possibles : Instructeur Médical, Formateur Médical, Apprenti Formateur, Mentor, Représentant du Personnel, Responsable IT</span><br/><br/>
+                                            <input type="text" name="role" class="textInputStyleLarge" placeholder="Rôle(s)" value="<?php echo $effectifToModify['role']?>" autocomplete="off">
                                         </td>
                                     </tr>
                                 </tbody>

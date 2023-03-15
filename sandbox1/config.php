@@ -1,12 +1,16 @@
 <?php
+    try {
 
-//    Attention ! le host => l'adresse de la base de données et non du site !!
-//
-//    Pour ceux qui doivent spécifier le port ex :
-//    $bdd = new PDO("mysql:host=CHANGER_HOST_ICI;dbname=CHANGER_DB_NAME;charset=utf8;port=3306", "CHANGER_LOGIN", "CHANGER_PASS");
+        // ******  Configuration LIVE - Debut ******
+        $DBhost  = "lsmcovptsg.mysql.db";   // URL mysql.db
+        $DBowner = "lsmcovptsg";            // database Username
+        $DBName  = "lsmcovptsg";            // database Name
+        $DBpw    = "7hahHW582QbK7h";        // database Password
+        // ******  Configuration LIVE - Fin ******
+        $DBconnect = "mysql:dbname=".$DBName.";host=".$DBhost;
+        $bdd = new PDO($DBconnect, $DBowner, $DBpw);
 
-try {
-    $bdd = new PDO("mysql:host=localhost;dbname=lsmc;charset=utf8", "root", "");
-} catch (PDOException $e) {
-    die("Erreur : " . $e->getMessage());
-}
+    } catch (PDOException $e) {
+        die("CONFIG.PHP - ERROR : " . $e->getMessage());
+    }
+?>

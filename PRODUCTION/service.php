@@ -29,6 +29,7 @@
     $roleEffectifActuel         = $data["role"];
     $agregationsEffectifActuel  = $data["agregation"];
     $telephoneEffectifActuel    = $data["phone"];
+    $bankEffectifActuel         = $data["bank"];
 
     // Info : Reformattage Textuel
     $hopitalEffectifActuel      = strtoupper($hopitalEffectifActuel);
@@ -38,57 +39,56 @@
     $roleEffectifActuel         = ucfirst($roleEffectifActuel);
     $telephoneEffectifActuel    = substr_replace($telephoneEffectifActuel, ' ', 3, 0);
     $telephoneEffectifActuel    = substr_replace($telephoneEffectifActuel, ' ', 6, 0);
-    if ($agregationsEffectifActuel === '') { $agregationsEffectifActuel = 'Aucune'; }
+    if ($agregationsEffectifActuel === '') { $agregationsEffectifActuel = '/'; }
+    if ($roleEffectifActuel === '') { $roleEffectifActuel = '/'; }
 
     //                                                       0      1          2              3        4      5       6      7         8       9
     $result                 = mysqli_query($connect, "SELECT id, effectif, debutservice, finservice, total, dernier, heure, minute, seconde, jour FROM service WHERE effectif=$idEffectifActuel");
-    $result_total           = mysqli_query($connect, "SELECT SUM(seconde) AS seconde, SUM(minute) AS minute, SUM(heure) AS heure, SUM(jour) AS jour, dernier FROM service WHERE effectif=$idEffectifActuel AND dernier=0 AND past=0");
+    $result2                 = mysqli_query($connect, "SELECT id, effectif, debutservice, finservice, total, dernier, heure, minute, seconde, jour FROM service WHERE effectif=$idEffectifActuel");
+//    $result_total           = mysqli_query($connect, "SELECT SUM(seconde) AS seconde, SUM(minute) AS minute, SUM(heure) AS heure, SUM(jour) AS jour, dernier FROM service WHERE effectif=$idEffectifActuel AND dernier=0 AND past=0");
 
-    while ($currentService = mysqli_fetch_row($result_total)) {
+    $total_heure    = 0;
+    $total_minute   = 0;
+    $total_seconde  = 0;
+    while ($currentService = mysqli_fetch_row($result2)) {
 
-        $total_jour     = $currentService[3];
-        $total_heure    = $currentService[2];
-        $total_minute   = $currentService[1];
-        $total_seconde  = $currentService[0];
+        $start_datetime = new DateTime($currentService[2]);
+        $diff = $start_datetime->diff(new DateTime($currentService[3]));
 
-        if (!$total_heure) {
-            $total_heure = 0;
-        }
-        if (!$total_minute) {
-            $total_minute = 0;
-        }
-        if (!$total_seconde) {
-            $total_seconde = 0;
-        }
+        $total_heure    += $diff->h;
+        $total_minute   += $diff->i;
+        $total_seconde  += $diff->s;
 
-        $minute_supp = 0;
-        if ($total_seconde > 59) {
-            $minute_supp = intval($total_seconde / 60);
-            $total_seconde = $total_seconde % 60;
-            $total_minute = $total_minute + $minute_supp;
-        }
+//        if (!$total_heure) {
+//            $total_heure = 0;
+//        }
+//        if (!$total_minute) {
+//            $total_minute = 0;
+//        }
+//        if (!$total_seconde) {
+//            $total_seconde = 0;
+//        }
 
-        $heure_supp = 0;
-        if ($total_minute > 59) {
-            $heure_supp = intval($total_minute / 60);
-            $total_minute = $total_minute % 60;
-            $total_heure = $total_heure + $heure_supp;
-        }
+    }
+    $minute_supp = 0;
+    if ($total_seconde > 59) {
+        $minute_supp = intval($total_seconde / 60);
+        $total_seconde = $total_seconde % 60;
+        $total_minute = $total_minute + $minute_supp;
+    }
 
-//         $jour_supp = 0;
-//         if ($total_heure > 23) {
-//             $jour_supp = intval($total_heure / 24);
-//             $total_heure = $total_heure % 24;
-//             $total_jour = $total_jour + $jour_supp;
-//         }
-
+    $heure_supp = 0;
+    if ($total_minute > 59) {
+        $heure_supp = intval($total_minute / 60);
+        $total_minute = $total_minute % 60;
+        $total_heure = $total_heure + $heure_supp;
     }
     header("refresh: 30");
 ?>
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Prise de Service</title>
+		<title>LSMC - Prise de Service</title>
 		<link rel="stylesheet" href="./css/style.css">
 		<link rel="stylesheet" href="./css/tools.css">
         <script src="http://code.jquery.com/jquery-latest.js"></script>
@@ -147,7 +147,9 @@
             .titleSummaryStyle {
                 font-weight: bold;
             }
-
+            .rowEffectifMe {
+                background-color: #aa1ed3;
+            }
 		</style>
         <script language="javascript" type="text/javascript">
 
@@ -286,14 +288,23 @@
                 $minute = $difference->i;
                 $seconde = $difference->s;
 
+                /////
+                $currentIntervention = $data["intervention"];
+                echo "nouveauStatut = " . $nouveauStatut;
+                echo "INTERVENTION = " . $data["intervention"];
                 $sql1   = "UPDATE service SET finservice=now(), heure=$heure, minute=$minute, seconde=$seconde, dernier='0' WHERE effectif=$idEffectifActuel AND dernier='1' LIMIT 1";
                 $sql2   = "INSERT INTO `service` (`id`, `effectif`, `firstname`, `lastname`, `debutservice`, `finservice`, `heure`, `minute`, `dernier`, `status`) VALUES (NULL, $idEffectifActuel, '$prenomEffectifActuel', '$nomEffectifActuel', NOW(), NULL, 0, 0, '1', '$nouveauStatut')";
 
-                echo "sqlMAJ = " . $sqlMAJ . "<br/>";
-
                 if ($sqlMAJ === 1) {
-                    if ($conn->query($sql) === TRUE && $conn->query($sql1) === TRUE && $conn->query($sql2) === TRUE) {
+                    if ($conn->query($sql) === TRUE) {
                         echo "button_MiseAJour Record updated successfully";
+                        if ($nouveauStatut <> $currentIntervention) {
+                            if ($conn->query($sql1) === TRUE && $conn->query($sql2) === TRUE) {
+                                echo "button_MiseAJour Record updated successfully";
+                            } else {
+                                echo "button_MiseAJour Error updating record: " . $conn->error;
+                            }
+                        }
                     } else {
                         echo "button_MiseAJour Error updating record: " . $conn->error;
                     }
@@ -461,7 +472,7 @@
             <tbody>
                 <tr>
                     <td style="width: 33%;">
-                        <a href="./landing.php" class="btn btn-info btn-lg" style="margin: 0px 10px; width: 200px;">Retour Profil</a>
+                        <a href="./landing.php" class="btn btn-info btn-lg" style="margin: 0px 10px; width: 200px;">Retour au Menu</a>
                         <a href="./historique.php" class="btn btn-info btn-lg" style="margin: 0px 10px; width: 200px;">Mes Heures</a>
                     </td>
                     <td style="width: 34%; color: #aec3b0;">
@@ -469,7 +480,7 @@
                         <!-- <h1>cService = <?php echo $data["service"];?> - cDeservice = <?php echo $data["deservice"];?></h1> -->
                     </td>
                     <td style="width: 33%;">
-                        <a href="./alleffectif.php" class="btn btn-info btn-lg" style="margin: 0px 10px; width: 200px;">Toutes les Effectifs</a>
+                        <a href="./alleffectif.php" class="btn btn-info btn-lg" style="margin: 0px 10px; width: 200px;">Tous les Effectifs</a>
                         <?php if($data["viewall"] === '1') echo '
                             <a href="./alltime.php" class="btn btn-info btn-lg" style="margin: 0px 10px; width: 200px;">Toutes les Heures</a>
                         '?>
@@ -482,7 +493,7 @@
             <tbody>
                 <tr>
                     <td style="width: 33%; vertical-align: top;">
-                        <div style="margin: 50px; padding: 10px 10px 20px 10px; background-color: #aec3b0; border-radius: 10px;">
+                        <div style="margin: 50px 50px 20px 50px; padding: 10px 10px 20px 10px; background-color: #aec3b0; border-radius: 10px;">
                             <h4 class="bold underline" style="padding: 10px; color: #01161e;">Fiche Récapitulative Hebdomadaire</h4>
                             <table style="width: 100%; color: #01161e;">
                                 <tbody>
@@ -512,6 +523,11 @@
                                         </td>
                                     </tr>
                                     <tr>
+                                        <td class="titleSummaryStyle">Compte Bancaire :</td>
+                                        <td><?php echo $bankEffectifActuel;?></td>
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <td>&nbsp;</td>
                                         <td>&nbsp;</td>
                                     </tr>
@@ -530,7 +546,8 @@
                                 </tbody>
                             </table>
                         </div>
-                        <a href="./service.php" class="btn btn-info btn-lg" style="margin: 10px 10px; width: 200px;">Rafraîchir la page</a>
+                        <a href="./service.php" class="btn btn-info btn-lg" style="margin: 10px 10px; width: 200px;">Rafraîchir la page</a><br/>
+                        <span style="font-size: small;">Information : cette page est actualisée toutes les 30 secondes</span>
                     </td>
                     <td style="width: 34%;">
                         <form method="post" action="./service.php" style="width: 100%; text-align: center;">
@@ -559,7 +576,10 @@
                                                 <option value="Évênement">Évênement</option>
                                                 <option value="Réunion">Réunion</option>
                                                 <option value="Gestion Direction">Gestion Direction</option>
-                                            </select>
+                                                <option value="Développement Intranet">Développement Intranet</option>
+                                                <option value="Administratif">Administratif</option>
+                                            </select><br/>
+                                            <span style="font-size: small;">Rappel : Code 7 pas plus de 15 minutes</span>
                                         </td>
                                     </tr>
                                     <tr>
@@ -586,6 +606,11 @@
                                                 <option value="Hélicoptère">Hélicoptère</option>
                                                 <option value="Corbillard">Corbillard</option>
                                             </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="vehicleTitleStyle">
+                                            <a href="./vehicule.php" class="btn btn-repair btn-lg" style="margin: 0px 10px; width: 300px;">Déclarer Incident Véhicule</a>
                                         </td>
                                     </tr>
                                     <tr>
@@ -717,6 +742,7 @@
                 while ($row = mysqli_fetch_row($result)) {
                     $rowPair = 'rowEffectifPair';
                     $rowImpair = 'rowEffectifImpair';
+                    $rowMe = 'rowEffectifMe';
                     $rowAppliedClass = '';
                     if ($rank % 2 === 0) { // PAIR
                         $rowAppliedClass = $rowPair;
@@ -738,13 +764,18 @@
                     $debutservice       = $row[11];
                     $service            = $row[12];
 
+                if ($id === $data["id"]) { // ME
+                    $rowAppliedClass = $rowMe;
+                }
+
                 // Info : Reformattage Textuel
                 $hopital = strtoupper($hopital);
                 $prenom = ucfirst($prenom);
                 $nom = ucfirst($nom);
                 $grade = ucfirst($grade);
+                if ($role === '') { $role = '/'; }
                 $role = ucfirst($role);
-                if ($agregations === '') { $agregations = 'Aucune'; }
+                if ($agregations === '') { $agregations = '/'; }
                 $phone = substr_replace($phone, ' ', 3, 0);
                 $phone = substr_replace($phone, ' ', 6, 0);
                 if ($commentaire === '') { $commentaire = 'Aucun'; }

@@ -8,7 +8,7 @@
 
     <link href="./css/magnificPopup.css" rel="stylesheet" />
     <link rel="stylesheet" href="./css/style.css">
-    <title>Connexion</title>
+    <title>LSMC - Page de Connexion</title>
     <style>
         body {
             color: #ffffff;
@@ -19,7 +19,7 @@
 
 <body>
 
-    <div class="login-form">
+    <div class="login-form" style="border-radius: 10px !important; margin-top: 300px; background: #a2c2e5 !important;">
         <?php if (isset($_GET["login_err"])) {
              $err = htmlspecialchars($_GET["login_err"]);
              switch ($err) {

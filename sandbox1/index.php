@@ -8,12 +8,18 @@
 
     <link href="./css/magnificPopup.css" rel="stylesheet" />
     <link rel="stylesheet" href="./css/style.css">
-    <title>Connexion</title>
+    <title>LSMC - Page de Connexion</title>
+    <style>
+        body {
+            color: #ffffff;
+            background-color: #01161e;
+        }
+    </style>
 </head>
 
 <body>
 
-    <div class="login-form">
+    <div class="login-form" style="border-radius: 10px !important; margin-top: 300px; background: #a2c2e5 !important;">
         <?php if (isset($_GET["login_err"])) {
              $err = htmlspecialchars($_GET["login_err"]);
              switch ($err) {
@@ -33,8 +39,8 @@
             <?php break;}
          } ?>
 
-        <form action="connexion.php" method="post">
-            <h2 class="text-center">Connexion</h2>
+        <form action="./connexion.php" method="post">
+            <h2 class="text-center" style="color: black;">Connexion</h2>
             <div class="form-group">
                 <input type="text" name="pseudo" class="form-control" placeholder="Pseudo" required="required"
                     autocomplete="off">
@@ -48,7 +54,7 @@
             </div>
         </form>
 
-        <p class="text-center"><a href="inscription.php">Inscription</a></p>
+        <!-- <p class="text-center"><a href="./inscription.php">Inscription</a></p> -->
     </div>
     <style>
     .login-form {
