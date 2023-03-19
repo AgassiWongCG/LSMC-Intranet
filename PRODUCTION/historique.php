@@ -138,9 +138,9 @@
         mysqli_select_db($connect, $dbname) or die("erreur de connexion à la base de données");
         $idEffectifActuel = $data["id"];
 
-        //                                                       0      1          2              3        4      5       6      7         8       9
-        $result                 = mysqli_query($connect, "SELECT id, effectif, debutservice, finservice, total, dernier, heure, minute, seconde, jour, firstname, lastname, status FROM service WHERE effectif=$idEffectifActuel AND past=0 AND toignore=0");
-        $result2                = mysqli_query($connect, "SELECT id, effectif, debutservice, finservice, total, dernier, heure, minute, seconde, jour, firstname, lastname, status FROM service WHERE effectif=$idEffectifActuel AND past=0 AND toignore=0");
+        //                                                       0      1          2              3        4      5       6      7         8       9        10      11      12          13
+        $result                 = mysqli_query($connect, "SELECT id, effectif, debutservice, finservice, total, dernier, heure, minute, seconde, jour, firstname, lastname, status, adjusted FROM service WHERE effectif=$idEffectifActuel AND past=0 AND toignore=0");
+        $result2                = mysqli_query($connect, "SELECT id, effectif, debutservice, finservice, total, dernier, heure, minute, seconde, jour, firstname, lastname, status, adjusted FROM service WHERE effectif=$idEffectifActuel AND past=0 AND toignore=0");
 
 //        echo "ID ACTUEL = " . $idEffectifActuel;
 
@@ -152,9 +152,19 @@
         while ($rowbis = mysqli_fetch_row($result2)) {
             $start_datetime = new DateTime($rowbis[2]);
             $diff = $start_datetime->diff(new DateTime($rowbis[3]));
-            $total_seconde  += $diff->s;
-            $total_minute   += $diff->i;
-            $total_heure    += $diff->h;
+            if ($rowbis[13] === '0')
+            {
+                $total_seconde  += $diff->s;
+                $total_minute   += $diff->i;
+                $total_heure    += $diff->h;
+            }
+            else if ($rowbis[13] === '1')
+            {
+                $total_seconde  = $total_seconde    + intval($rowbis[8]);
+                $total_minute   = $total_minute     + intval($rowbis[7]);
+                $total_heure    = $total_heure      + intval($rowbis[6]);
+            }
+
 
 //            echo $diff->days.' Days total<br>';
 //            echo $diff->y.' Years<br>';
@@ -277,10 +287,14 @@
                     $finservice = "Non terminé";
                 }
 
-                $heure      = $diff->h;
-                $minute     = $diff->i;
-                $seconde    = $diff->s;
+//                $heure      = $diff->h;
+//                $minute     = $diff->i;
+//                $seconde    = $diff->s;
 
+                $heure      = $heure;
+                $minute     = $minute;
+                $seconde    = $seconde;
+                
                 if ($dernier === '1') {
                     $jour = "?";
                     $heure = "?";

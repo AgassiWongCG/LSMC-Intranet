@@ -144,10 +144,9 @@
         mysqli_select_db($connect, $dbname) or die("erreur de connexion à la base de données");
         $idEffectifActuel = $data["id"];
 
-        //                                                       0      1          2              3        4      5       6      7         8       9
-        $result                 = mysqli_query($connect, "SELECT id, effectif, debutservice, finservice, total, dernier, heure, minute, seconde, jour, firstname, lastname, status FROM service WHERE past=0 AND dernier = 0 AND toignore=0");
-
-        $result2                = mysqli_query($connect, "SELECT id, effectif, debutservice, finservice, total, dernier, heure, minute, seconde, jour, firstname, lastname, status FROM service WHERE dernier=0 AND past=0 AND toignore=0");
+        //                                                       0      1          2              3        4      5       6      7         8       9      10        11      12        13
+        $result                 = mysqli_query($connect, "SELECT id, effectif, debutservice, finservice, total, dernier, heure, minute, seconde, jour, firstname, lastname, status, adjusted FROM service WHERE past=0 AND dernier = 0 AND toignore=0");
+        $result2                = mysqli_query($connect, "SELECT id, effectif, debutservice, finservice, total, dernier, heure, minute, seconde, jour, firstname, lastname, status, adjusted FROM service WHERE dernier=0 AND past=0 AND toignore=0");
 
         $total_heure    = 0;
         $total_minute   = 0;
@@ -156,9 +155,20 @@
         while ($rowbis = mysqli_fetch_row($result2)) {
             $start_datetime = new DateTime($rowbis[2]);
             $diff = $start_datetime->diff(new DateTime($rowbis[3]));
-            $total_seconde  += $diff->s;
-            $total_minute   += $diff->i;
-            $total_heure    += $diff->h;
+
+            if ($rowbis[13] === '0')
+            {
+                $total_seconde  += $diff->s;
+                $total_minute   += $diff->i;
+                $total_heure    += $diff->h;
+            }
+            else if ($rowbis[13] === '1')
+            {
+                $total_seconde  = $total_seconde    + intval($rowbis[8]);
+                $total_minute   = $total_minute     + intval($rowbis[7]);
+                $total_heure    = $total_heure      + intval($rowbis[6]);
+            }
+
         }
         $minute_supp = 0;
         if ($total_seconde > 59) {

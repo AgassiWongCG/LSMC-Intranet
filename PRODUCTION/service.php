@@ -43,8 +43,8 @@
     if ($roleEffectifActuel === '') { $roleEffectifActuel = '/'; }
 
     //                                                       0      1          2              3        4      5       6      7         8       9
-    $result                 = mysqli_query($connect, "SELECT id, effectif, debutservice, finservice, total, dernier, heure, minute, seconde, jour FROM service WHERE effectif=$idEffectifActuel");
-    $result2                 = mysqli_query($connect, "SELECT id, effectif, debutservice, finservice, total, dernier, heure, minute, seconde, jour FROM service WHERE effectif=$idEffectifActuel");
+    $result                 = mysqli_query($connect, "SELECT id, effectif, debutservice, finservice, total, dernier, heure, minute, seconde, jour, adjusted FROM service WHERE effectif=$idEffectifActuel");
+    $result2                 = mysqli_query($connect, "SELECT id, effectif, debutservice, finservice, total, dernier, heure, minute, seconde, jour, adjusted FROM service WHERE effectif=$idEffectifActuel");
 //    $result_total           = mysqli_query($connect, "SELECT SUM(seconde) AS seconde, SUM(minute) AS minute, SUM(heure) AS heure, SUM(jour) AS jour, dernier FROM service WHERE effectif=$idEffectifActuel AND dernier=0 AND past=0");
 
     $total_heure    = 0;
@@ -55,9 +55,22 @@
         $start_datetime = new DateTime($currentService[2]);
         $diff = $start_datetime->diff(new DateTime($currentService[3]));
 
-        $total_heure    += $diff->h;
-        $total_minute   += $diff->i;
-        $total_seconde  += $diff->s;
+        if ($currentService[10] === '0')
+        {
+            $total_seconde      += $diff->s;
+            $total_minute       += $diff->i;
+            $total_heure        += $diff->h;
+        }
+        else if ($currentService[10] === '1')
+        {
+            $total_seconde      = $total_seconde  + intval($currentService[8]);
+            $total_minute       = $total_minute   + intval($currentService[7]);
+            $total_heure        = $total_heure    + intval($currentService[6]);
+        }
+
+//        $total_heure    += $diff->h;
+//        $total_minute   += $diff->i;
+//        $total_seconde  += $diff->s;
 
 //        if (!$total_heure) {
 //            $total_heure = 0;

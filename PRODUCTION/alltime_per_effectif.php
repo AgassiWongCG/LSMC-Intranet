@@ -56,13 +56,13 @@
 
         //                                                0      1          2       3      4
         $listEffectifs   = mysqli_query($connect, "SELECT id, firstname, lastname, grade, rank FROM effectif ORDER BY rank DESC");
-        //                                                0      1          2              3        5       6            7       8
-        $listServices    = mysqli_query($connect, "SELECT id, effectif, debutservice, finservice, dernier, firstname, lastname, status FROM service WHERE past=0 AND dernier=0 AND toignore=0 ORDER BY effectif");
+        //                                                0      1          2              3        5       6            7       8          9
+        $listServices    = mysqli_query($connect, "SELECT id, effectif, debutservice, finservice, dernier, firstname, lastname, status, adjusted, heure, minute, seconde FROM service WHERE past=0 AND dernier=0 AND toignore=0 ORDER BY effectif");
 
         $listServicesByEffectif     = mysqli_query($connect, "SELECT service.id, effectif.id, effectif.firstname, effectif.lastname, effectif.grade, effectif.rank, service.debutservice, service.finservice FROM service JOIN effectif ON service.effectif=effectif.id WHERE service.dernier=0 ORDER BY effectif.rank DESC, effectif.id ASC");
         $listServicesByEffectifBis  = mysqli_query($connect, "SELECT service.id, effectif.id, effectif.firstname, effectif.lastname, effectif.grade, effectif.rank, service.debutservice, service.finservice FROM service JOIN effectif ON service.effectif=effectif.id WHERE service.dernier=0 ORDER BY effectif.rank DESC, effectif.id ASC");
 
-        $result2                = mysqli_query($connect, "SELECT id, effectif, debutservice, finservice, total, dernier, heure, minute, seconde, jour, firstname, lastname, status FROM service WHERE dernier=0 AND past=0 AND toignore=0");
+        $result2                = mysqli_query($connect, "SELECT id, effectif, debutservice, finservice, total, dernier, heure, minute, seconde, jour, firstname, lastname, status, adjusted FROM service WHERE dernier=0 AND past=0 AND toignore=0");
 
         $total_heure    = 0;
         $total_minute   = 0;
@@ -71,9 +71,22 @@
         while ($rowbis = mysqli_fetch_row($result2)) {
             $start_datetime = new DateTime($rowbis[2]);
             $diff = $start_datetime->diff(new DateTime($rowbis[3]));
-            $total_seconde  += $diff->s;
-            $total_minute   += $diff->i;
-            $total_heure    += $diff->h;
+
+            if ($rowbis[13] === '0')
+            {
+              $total_seconde  += $diff->s;
+              $total_minute   += $diff->i;
+              $total_heure    += $diff->h;
+            }
+            else if ($rowbis[13] === '1')
+            {
+              $total_seconde  = $total_seconde    + intval($rowbis[8]);
+              $total_minute   = $total_minute     + intval($rowbis[7]);
+              $total_heure    = $total_heure      + intval($rowbis[6]);
+            }
+//            $total_seconde  += $diff->s;
+//            $total_minute   += $diff->i;
+//            $total_heure    += $diff->h;
         }
         $minute_supp = 0;
         if ($total_seconde > 59) {
@@ -182,16 +195,23 @@
                             $effecId = $rowService["effectif"];
                             if (intval($effecId) === intval($idEffectif))
                             {
-//                                echo $rowService["id"] . "<br/>";
-//                                echo $rowService["effectif"] . "<br/>";
-//                                echo $rowService["debutservice"] . "<br/>";
-//                                echo $rowService["finservice"] . "<br/>";
-//                                echo "================================================<br/>";
                                 $start_datetime = new DateTime($rowService["debutservice"]);
                                 $diff           = $start_datetime->diff(new DateTime($rowService["finservice"]));
-                                $total_S        += $diff->s;
-                                $total_M        += $diff->i;
-                                $total_H        += $diff->h;
+
+                                if ($rowService["adjusted"] === '0')
+                                {
+                                    $total_S    += $diff->s;
+                                    $total_M    += $diff->i;
+                                    $total_H    += $diff->h;
+                                }
+                                else
+                                {
+//                                    echo "HELLO " . $rowService["adjusted"] . " --- " . $effecId . "<br/>";
+//                                    echo "DAMN " . $rowService["heure"] . " --- " . $rowService["minute"] . " --- " . $rowService["seconde"];
+                                    $total_S    = $total_S    + intval($rowService["seconde"]);
+                                    $total_M    = $total_M    + intval($rowService["minute"]);
+                                    $total_H    = $total_H    + intval($rowService["heure"]);
+                                }
                             }
                         }
                         $minute_supp = 0;
@@ -220,54 +240,6 @@
                                 </tr>";
                         $rank += 1;
                     }
-                    ///////////////////////////////////
-
-//                $rank = 0;
-//                while ($row = mysqli_fetch_row($listEffectifs))
-//                {
-//                    $rowPair = 'rowHistoriquePair';
-//                    $rowImpair = 'rowHistoriqueImpair';
-//                    $rowAppliedClass = '';
-//                    if ($rank % 2 === 0) { // PAIR
-//                        $rowAppliedClass = $rowPair;
-//                    }
-//                    if ($rank % 2 === 1) { // IMPAIR
-//                        $rowAppliedClass = $rowImpair;
-//                    }
-//
-//                    $idEffectif         = $row[0];
-//                    $fnEffectif         = $row[1];
-//                    $lnEffectif         = $row[2];
-//                    $gradeEffectif      = $row[3];
-//                    $rankEffectif       = $row[4];
-//
-//                    ///////////////// CALCUL TOTAL - START
-//
-//                    while ($rowService = mysql_fetch_assoc($listServices))
-//                    {
-//                        if ($rowService[1] === $row[0])
-//                        {
-//                            echo "ID ROW SERVICE = " . $rowService[0];
-//                        }
-//                        else
-//                        {
-//
-//                        }
-//                    }
-//
-//
-//                    ///////////////// CALCUL TOTAL - END
-//
-//                    echo "  <tr class='$rowAppliedClass'>
-//                                <th>$idEffectif</th>
-//                                <th>$fnEffectif $lnEffectif</th>
-//                                <th>$gradeEffectif</th>
-//                                <th>BLA</th>
-//                                <th>BLA</th>
-//                                <th>BLA - $rank</th>
-//                            </tr>";
-//                    $rank += 1;
-//                }
         ?>
         </div>
         <php?

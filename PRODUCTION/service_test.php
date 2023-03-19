@@ -29,6 +29,7 @@
     $roleEffectifActuel         = $data["role"];
     $agregationsEffectifActuel  = $data["agregation"];
     $telephoneEffectifActuel    = $data["phone"];
+    $bankEffectifActuel         = $data["bank"];
 
     // Info : Reformattage Textuel
     $hopitalEffectifActuel      = strtoupper($hopitalEffectifActuel);
@@ -38,11 +39,12 @@
     $roleEffectifActuel         = ucfirst($roleEffectifActuel);
     $telephoneEffectifActuel    = substr_replace($telephoneEffectifActuel, ' ', 3, 0);
     $telephoneEffectifActuel    = substr_replace($telephoneEffectifActuel, ' ', 6, 0);
-    if ($agregationsEffectifActuel === '') { $agregationsEffectifActuel = 'Aucune'; }
+    if ($agregationsEffectifActuel === '') { $agregationsEffectifActuel = '/'; }
+    if ($roleEffectifActuel === '') { $roleEffectifActuel = '/'; }
 
     //                                                       0      1          2              3        4      5       6      7         8       9
-    $result                 = mysqli_query($connect, "SELECT id, effectif, debutservice, finservice, total, dernier, heure, minute, seconde, jour FROM service WHERE effectif=$idEffectifActuel");
-    $result2                 = mysqli_query($connect, "SELECT id, effectif, debutservice, finservice, total, dernier, heure, minute, seconde, jour FROM service WHERE effectif=$idEffectifActuel");
+    $result                 = mysqli_query($connect, "SELECT id, effectif, debutservice, finservice, total, dernier, heure, minute, seconde, jour, adjusted FROM service WHERE effectif=$idEffectifActuel");
+    $result2                 = mysqli_query($connect, "SELECT id, effectif, debutservice, finservice, total, dernier, heure, minute, seconde, jour, adjusted FROM service WHERE effectif=$idEffectifActuel");
 //    $result_total           = mysqli_query($connect, "SELECT SUM(seconde) AS seconde, SUM(minute) AS minute, SUM(heure) AS heure, SUM(jour) AS jour, dernier FROM service WHERE effectif=$idEffectifActuel AND dernier=0 AND past=0");
 
     $total_heure    = 0;
@@ -53,9 +55,22 @@
         $start_datetime = new DateTime($currentService[2]);
         $diff = $start_datetime->diff(new DateTime($currentService[3]));
 
-        $total_heure    += $diff->h;
-        $total_minute   += $diff->i;
-        $total_seconde  += $diff->s;
+        if ($currentService[10] === '0')
+        {
+            $total_seconde      += $diff->s;
+            $total_minute       += $diff->i;
+            $total_heure        += $diff->h;
+        }
+        else if ($currentService[10] === '1')
+        {
+            $total_seconde      = $total_seconde  + intval($currentService[8]);
+            $total_minute       = $total_minute   + intval($currentService[7]);
+            $total_heure        = $total_heure    + intval($currentService[6]);
+        }
+
+//        $total_heure    += $diff->h;
+//        $total_minute   += $diff->i;
+//        $total_seconde  += $diff->s;
 
 //        if (!$total_heure) {
 //            $total_heure = 0;
@@ -248,7 +263,7 @@
                 $conn->close();
 
                 // Info : Actualisation vers la même page pour ne pas duppliquer la requête de formulaire
-                header("Location: ./service_fixing.php");
+                header("Location: ./service.php");
 
             }
 
@@ -310,7 +325,7 @@
                 $conn->close();
 
                 // Info : Actualisation vers la même page pour ne pas duppliquer la requête de formulaire
-                header("Location: ./service_fixing.php");
+                header("Location: ./service.php");
             }
 
             // Info : Méthode pour envoyer un effectif en Code 99
@@ -383,7 +398,7 @@
                 $conn->close();
 
                 // Info : Actualisation vers la même page pour ne pas duppliquer la requête de formulaire
-                header("Location: ./service_fixing.php");
+                header("Location: ./service.php");
             }
 
             if (isset($_POST["button_FinDeService"])) {
@@ -433,7 +448,7 @@
                 $conn->close();
 
                 // Info : Actualisation vers la même page pour ne pas duppliquer la requête de formulaire
-                header("Location: ./service_fixing.php");
+                header("Location: ./service.php");
             }
 
             $servername = "lsmcovptsg.mysql.db";   // URL mysql.db
@@ -521,6 +536,11 @@
                                         </td>
                                     </tr>
                                     <tr>
+                                        <td class="titleSummaryStyle">Compte Bancaire :</td>
+                                        <td><?php echo $bankEffectifActuel;?></td>
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <td>&nbsp;</td>
                                         <td>&nbsp;</td>
                                     </tr>
@@ -539,11 +559,11 @@
                                 </tbody>
                             </table>
                         </div>
-                        <a href="./service_fixing.php" class="btn btn-info btn-lg" style="margin: 10px 10px; width: 200px;">Rafraîchir la page</a><br/>
+                        <a href="./service.php" class="btn btn-info btn-lg" style="margin: 10px 10px; width: 200px;">Rafraîchir la page</a><br/>
                         <span style="font-size: small;">Information : cette page est actualisée toutes les 30 secondes</span>
                     </td>
                     <td style="width: 34%;">
-                        <form method="post" action="./service_fixing.php" style="width: 100%; text-align: center;">
+                        <form method="post" action="./service.php" style="width: 100%; text-align: center;">
                             <table style="width: 100%; text-align: center;">
                                 <tbody>
                                     <tr>
@@ -571,7 +591,8 @@
                                                 <option value="Gestion Direction">Gestion Direction</option>
                                                 <option value="Développement Intranet">Développement Intranet</option>
                                                 <option value="Administratif">Administratif</option>
-                                            </select>
+                                            </select><br/>
+                                            <span style="font-size: small;">Rappel : Code 7 pas plus de 15 minutes</span>
                                         </td>
                                     </tr>
                                     <tr>
@@ -669,7 +690,7 @@
                         <div style="margin: 50px; padding: 10px 10px 20px 10px; background-color: #ff8484; border-radius: 10px;">
                             <h4 class="bold underline" style="padding: 10px; color: #c82333;">Gestion Rapide Direction</h4>
 
-                                <form method="post" action="./service_fixing.php" style="width: 100%; text-align: center;">
+                                <form method="post" action="./service.php" style="width: 100%; text-align: center;">
                                     <table style="width: 100%; text-align: center;">
                                         <tbody>
                                             <tr>
@@ -765,8 +786,9 @@
                 $prenom = ucfirst($prenom);
                 $nom = ucfirst($nom);
                 $grade = ucfirst($grade);
+                if ($role === '') { $role = '/'; }
                 $role = ucfirst($role);
-                if ($agregations === '') { $agregations = 'Aucune'; }
+                if ($agregations === '') { $agregations = '/'; }
                 $phone = substr_replace($phone, ' ', 3, 0);
                 $phone = substr_replace($phone, ' ', 6, 0);
                 if ($commentaire === '') { $commentaire = 'Aucun'; }

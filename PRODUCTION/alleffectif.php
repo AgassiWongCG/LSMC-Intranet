@@ -40,6 +40,16 @@
                 background: #e0a800;
                 border: 0px;
                 color: #212529;
+                width: 100%;
+                margin: 2px 0px;
+            }
+            .viewButtonClass {
+                border-radius: 5px;
+                background: #ffadea;
+                border: 0px;
+                color: #212529;
+                width: 100%;
+                margin: 2px 0px;
             }
         </style>
 		<script language="javascript" type="text/javascript"></script>
@@ -98,6 +108,26 @@
             $paramViewAll       = $effectifToModify["viewall"];
 
             header("Location: ./modification.php?effectifId=" . $id . "&agregation=" . $paramsAgregation . "&role=" . $paramsRole . "&deservice=" . $paramDeservice . "&register=" . $paramRegister . "&timemanager=" . $paramTimeManager . "&viewall=" . $paramViewAll);
+
+        }
+
+        if (isset($_POST["view"])) {
+            $id = $_POST['id'];
+
+            $reqEffectif = $bdd->prepare("SELECT * FROM effectif WHERE id=$id");
+            $reqEffectif->execute([$_SESSION["user"]]);
+            $effectifToModify = $reqEffectif->fetch();
+
+            $paramsAgregation = str_replace(", ", "*", $effectifToModify["agregation"]);
+
+            $paramsRole = str_replace(", ", "*", $effectifToModify["role"]);
+
+            $paramDeservice     = $effectifToModify["deservice"];
+            $paramRegister      = $effectifToModify["register"];
+            $paramTimeManager   = $effectifToModify["timemanager"];
+            $paramViewAll       = $effectifToModify["viewall"];
+
+            header("Location: ./serviceseffectif.php?effectifId=" . $id);
 
         }
 
@@ -186,6 +216,7 @@
                 writeRights($row["timemanager"]);
                 writeRights($row["viewall"]);
                 echo '<td>';
+                    echo '<form method="post" action=""><input type="hidden" name="id" value="' . $row["id"] . '"><input type="submit" name="view" class="viewButtonClass" value="Ses Heures"></form>';
                     echo '<form method="post" action=""><input type="hidden" name="id" value="' . $row["id"] . '"><input type="submit" name="edit" class="editButtonClass" value="Modifier"></form>';
                 echo '</td>';
                 echo '</td>';
