@@ -159,6 +159,7 @@
             $newEMS_sexe = $_POST['sexe'];
 //            $newEMS_dateentreehopital = new Date('NOW');
             $newEMS_pseudo = htmlspecialchars($newEMS_firstname . $newEMS_lastname);
+            $newEMS_pseudo = str_replace(' ', '', $newEMS_pseudo);
             $newEMS_password = htmlspecialchars($newEMS_uid . $newEMS_bank);
 
             // On hash le mot de passe avec Bcrypt, via un coût de 12

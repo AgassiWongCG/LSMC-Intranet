@@ -81,6 +81,7 @@
             </tr>
             <tr>
                 <td style="width: 33%;">
+                    <a href="./profilpicture.php" class="btn btn-warning btn-lg" style="margin: 0px 10px; width: 280px;">Changer ma Photo de Profil</a>
                 </td>
                 <td style="width: 34%; color: #aec3b0;">
                 </td>
@@ -108,6 +109,79 @@
             </tr>
         </tbody>
     </table>
+
+    <div style="padding: 1% 1%; background: #e9d1c1; border-radius: 20px; margin: 0% 25%; color: #01161e;">
+        <table style="width: 100%; text-align: center;" cellpadding="10px" cellspacing="10px" border="0">
+        	<tbody>
+        		<tr>
+        			<td style="width: 20%; vertical-align: middle;"><h5>NOUVELLE</h5></td>
+        			<td style="width: 20%; vertical-align: middle;"><h5>20 Mars 2023</h5></td>
+        			<td style="width: 60%; vertical-align: middle;"><h5>Photo de profil de votre compte</h5></td>
+        		</tr>
+        	</tbody>
+        </table>
+
+        <table style="width: 100%;" border="0">
+            <tbody>
+                <tr>
+                    <td cellpadding="10px" cellspacing="10px" class="justify" style="width: 100%;">
+                        Bonjour à toutes et à tous,
+                        <br/><br/>
+                        Il est désormais possible d'ajouter une photo de profil sur votre compte.
+                        <br/><br/>
+                        Rappel : Vous êtes responsables de la photo que vous publiez sur votre profil. Toutes photos ne respectant pas les règles de l'hôpital peut mener à des sanctions jusqu'au licenciement. Mettez une photo simple pour que vos collègues puissent vous reconnaître.
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table cellpadding="10px" cellspacing="10px" style="width: 100%;" border="0">
+        	<tbody>
+        		<tr>
+        			<td style="width: 70%;">&nbsp;</td>
+        			<td style="width: 30%; vertical-align: middle;"><h5>Agassi WONG<br/>Responsable IT</h5></td>
+        		</tr>
+        	</tbody>
+        </table>
+    </div>
+
+    <br/>
+    <div style="padding: 1% 1%; background: #dcc1e9; border-radius: 20px; margin: 0% 25%; color: #01161e;">
+        <table style="width: 100%; text-align: center;" cellpadding="10px" cellspacing="10px" border="0">
+        	<tbody>
+        		<tr>
+        			<td style="width: 20%; vertical-align: middle;"><h5>INFORMATION</h5></td>
+        			<td style="width: 20%; vertical-align: middle;"><h5>20 Mars 2023</h5></td>
+        			<td style="width: 60%; vertical-align: middle;"><h5>Compte-Rendu Réunion du 19 Mars 2023</h5></td>
+        		</tr>
+        	</tbody>
+        </table>
+
+        <table style="width: 100%;" border="0">
+            <tbody>
+                <tr>
+                    <td cellpadding="10px" cellspacing="10px" class="justify" style="width: 100%;">
+                        Voici le compte-rendu de la réunion de dimanche dernier.
+                        <br/><br/>
+                        <a href="https://docs.google.com/document/d/1sJWhHa7BsJPympHcgasF0g7pWks-A6LipVh-rmw_mlM/edit" target="_blank">Afficher le Compte-Rendu du 19 Mars 2023</a>
+                        <br/><br/>
+                        Bien à vous,
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table cellpadding="10px" cellspacing="10px" style="width: 100%;" border="0">
+        	<tbody>
+        		<tr>
+        			<td style="width: 70%;">&nbsp;</td>
+        			<td style="width: 30%; vertical-align: middle;"><h5>La Direction LSMC</h5></td>
+        		</tr>
+        	</tbody>
+        </table>
+    </div>
+
+    <br/>
 
     <div style="padding: 1% 1%; background: #dcc1e9; border-radius: 20px; margin: 0% 25%; color: #01161e;">
         <table style="width: 100%; text-align: center;" cellpadding="10px" cellspacing="10px" border="0">

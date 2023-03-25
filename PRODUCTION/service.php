@@ -163,6 +163,14 @@
             .rowEffectifMe {
                 background-color: #aa1ed3;
             }
+            a>div { display: none; }
+            a:hover>div { display: block; }
+            .profilePictureClass {
+                margin: 10px;
+                width:  100px;
+                height: 100px;
+                border-radius: 5px;
+            }
 		</style>
         <script language="javascript" type="text/javascript">
 
@@ -458,8 +466,8 @@
 
             ($connect = mysqli_connect($servername, $username, $password)) or die("erreur de connection à MySQL");
             mysqli_select_db($connect, $dbname) or die("erreur de connexion à la base de données");
-            //                                                           0      1          2         3        4      5     6         7        8            9            10          11            12
-            $result                     = mysqli_query($connect, "SELECT id, hospital, firstname, lastname, grade, role, agregation, phone, intervention, commentaire, vehicule, debutservice, service FROM effectif WHERE service = true ORDER BY rank DESC");
+            //                                                           0      1          2         3        4      5     6         7        8            9            10          11            12        13
+            $result                     = mysqli_query($connect, "SELECT id, hospital, firstname, lastname, grade, role, agregation, phone, intervention, commentaire, vehicule, debutservice, service, profilpicture FROM effectif WHERE service = true ORDER BY rank DESC");
             $nbrTotalService            = mysqli_num_rows($result);
 
             // LSMC
@@ -737,7 +745,7 @@
 
         <br/>
 
-    <div id="tableEffectif" style="width: 100%; padding: 0px 25px;">
+    <div id="tableEffectif" style="width: 100%; padding: 0px 25px; margin-bottom: 200px !important;">
         <table border="1" cellpadding="10px" cellspacing="10px" style="width: 100%;">
             <tr class="rowEffectifHeader">
                 <th style="width: 13%">Prénom Nom</th>
@@ -776,6 +784,7 @@
                     $vehicule           = $row[10];
                     $debutservice       = $row[11];
                     $service            = $row[12];
+                    $photo              = $row[13];
 
                 if ($id === $data["id"]) { // ME
                     $rowAppliedClass = $rowMe;
@@ -802,7 +811,7 @@
 
                 echo "
                     <tr class='$rowAppliedClass'>
-                        <td>$prenom $nom</td>
+                        <td><a>$prenom $nom<div><img class='profilePictureClass' src='" . $photo . "' width='100px' height='100px'/></div></a></td>
                         <td>$grade</td>
                         <td>$role</td>
                         <td>$agregations</td>

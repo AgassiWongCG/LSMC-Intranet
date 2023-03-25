@@ -51,6 +51,12 @@
                 width: 100%;
                 margin: 2px 0px;
             }
+            .profilePictureClass {
+                margin: 10px;
+                width:  100px;
+                height: 100px;
+                border-radius: 5px;
+            }
         </style>
 		<script language="javascript" type="text/javascript"></script>
 		<style>
@@ -135,7 +141,7 @@
         mysqli_select_db($connect, $dbname) or die("erreur de connexion à la base de données");
 
         //                                                       0      1          2        3     4      5     6     7      8           9           10      11          12        13    14
-        $result                 = mysqli_query($connect, "SELECT id, firstname, lastname, phone, grade, bank, uid,  role, agregation, deservice, register, timemanager, viewall, sexe, undeletable FROM effectif ORDER BY rank DESC");
+        $result                 = mysqli_query($connect, "SELECT id, firstname, lastname, phone, grade, bank, uid,  role, agregation, deservice, register, timemanager, viewall, sexe, undeletable, profilpicture FROM effectif ORDER BY rank DESC");
 
     ?>
 	<body style="width: 100%; text-align: center;">
@@ -175,6 +181,7 @@
                         <tr class="rowEffectifHeader bold">
                             <td>#</td>
                             <td>Effectif</td>
+                            <td>Photo</td>
                             <td>Téléphone</td>
                             <td>Grade</td>
                             <td>Rôle(s)</td>
@@ -206,6 +213,7 @@
                 echo "  <tr class='$rowAppliedClass'>";
                 echo "      <td>" . $rank . "</td>";
                 echo "      <td>" . ucfirst($row["firstname"]) . " " . ucfirst($row["lastname"]) . "</td>";
+                echo "      <td><img class='profilePictureClass' src='" . $row["profilpicture"] . "' width='100px' height='100px'/></td>";
                 echo "      <td>" . $row["phone"] . "</td>";
                 echo "      <td>" . $row["grade"] . "</td>";
                 echo "      <td>" . $row["role"] . "</td>";
@@ -232,6 +240,7 @@
                         <tr class="rowEffectifHeader bold">
                             <td>#</td>
                             <td>Effectif</td>
+                            <td>Photo</td>
                             <td>Téléphone</td>
                             <td>Grade</td>
                             <td>Rôle(s)</td>
@@ -265,6 +274,7 @@
                 $viewall            = $row[12];
                 $sexe               = $row[13];
                 $undeletable        = $row[14];
+                $profilpicture      = $row[15];
 
                 if ($id === $data["id"]) { // ME
                     $rowAppliedClass = $rowMe;
@@ -272,8 +282,9 @@
 
                 echo "<tr class='$rowAppliedClass'>
                         <td>$rank</td>
-                        <td>$prenom $nom</td>
-                        <td>$phone</td>
+                        <td>$prenom $nom</td>";
+                echo "      <td><img class='profilePictureClass' src='" . $profilpicture . "' width='100px' height='100px'/></td>";
+                echo "  <td>$phone</td>
                         <td>$grade</td>
                         <td>$role</td>
                         <td>$agregation</td>
